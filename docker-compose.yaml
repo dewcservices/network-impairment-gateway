@@ -25,6 +25,8 @@ services:
       context: .
       dockerfile: Dockerfile
     privileged: true
+    cap_add:
+      - NET_ADMIN
     networks:
       network_a:
         ipv4_address: 172.18.0.3
