@@ -1,5 +1,6 @@
-fastapi
+fastapi[all]
 uvicorn
+sqlalchemy
 ruff 
 black
 pre-commit
