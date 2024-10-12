@@ -1,4 +1,4 @@
-from fastapi import HTTPException, APIRouter, Depends
+from fastapi import APIRouter
 
 router = APIRouter(prefix="/api/profiles")
 

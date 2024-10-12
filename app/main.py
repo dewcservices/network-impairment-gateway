@@ -1,5 +1,6 @@
-from fastapi import FastAPI
 import subprocess
+
+from fastapi import FastAPI
 
 app = FastAPI()
 

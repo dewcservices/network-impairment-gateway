@@ -1,9 +1,10 @@
-import app.services.settings_strategy.isetting_strategy import ISettingStrategy
+from app.services.settings_strategy.isetting_strategy import ISettingStrategy
+
 
 class Clear(ISettingStrategy):
 
     def getSettingType() -> str:
-        return 'clear'
+        return "clear"
 
     def execute(command: str, payload) -> str:
         return f"{command}"

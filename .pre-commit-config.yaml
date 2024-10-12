@@ -1,0 +1,11 @@
+repos:
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: "v0.0.267"
+    hooks:
+      - id: ruff
+        args: ["--fix"]  # Autofix issues where possible
+
+  - repo: https://github.com/psf/black
+    rev: 23.9.1  # Check for the latest version
+    hooks:
+      - id: black

@@ -1,5 +1,6 @@
-import app.services.interfaces.isetting_service import ISettingService
-import app.services.settings_context import SettingsContext
+import subprocess
+from app.services.interfaces.isetting_service import ISettingService
+from app.services.settings_strategy.setting_context import SettingsContext
 
 class SettingsService(ISettingService):
 

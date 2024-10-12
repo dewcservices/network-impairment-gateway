@@ -1,2 +1,5 @@
 fastapi
 uvicorn
+ruff 
+black
+pre-commit
