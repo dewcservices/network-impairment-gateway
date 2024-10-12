@@ -3,21 +3,21 @@ from abc import ABC, abstractmethod
 
 class IBearerService(ABC):
     @abstractmethod
-    async def get_all():
+    async def get_all(self):
         pass
 
     @abstractmethod
-    async def get(bearer_id: int) -> str:
+    async def get(self, earer_id: int) -> str:
         pass
 
     @abstractmethod
-    async def create() -> str:
+    async def create(self) -> str:
         pass
 
     @abstractmethod
-    async def update(bearer_id: int) -> str:
+    async def update(self, bearer_id: int) -> str:
         pass
 
     @abstractmethod
-    async def delete(bearer_id: int) -> str:
+    async def delete(self, bearer_id: int) -> str:
         pass

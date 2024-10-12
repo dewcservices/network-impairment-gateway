@@ -3,21 +3,21 @@ from abc import ABC, abstractmethod
 
 class IEnvironmentService(ABC):
     @abstractmethod
-    async def get_all():
+    async def get_all(self):
         pass
 
     @abstractmethod
-    async def get(env_id: int) -> str:
+    async def get(self, env_id: int) -> str:
         pass
 
     @abstractmethod
-    async def create() -> str:
+    async def create(self) -> str:
         pass
 
     @abstractmethod
-    async def update(env_id: int) -> str:
+    async def update(self, env_id: int) -> str:
         pass
 
     @abstractmethod
-    async def delete(env_id: int) -> str:
+    async def delete(self, env_id: int) -> str:
         pass
