@@ -1,0 +1,13 @@
+{
+    // Format on save
+    "editor.formatOnSave": true,
+  
+    // Automatically fix linting issues on save (using Ruff)
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit",
+      "source.fixAll.ruff": "explicit",  // Enable Ruff to autofix linting issues
+      "source.organizeImports.ruff": "explicit"
+    },
+  
+    "editor.defaultFormatter": "ms-python.black-formatter"
+  }

@@ -1,0 +1,6 @@
+[tool.ruff]
+line-length = 88  # Same line length as Black
+extend-select = ["I"]  # To handle import sorting
+
+[tool.black]
+line-length = 88  # Default for Black

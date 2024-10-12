@@ -1,0 +1,50 @@
+version: "3"
+services:
+  container_a:
+    container_name: container_a
+    image: busybox
+    privileged: true # permission required to change the subnet gateway to the impairment gateway
+    command: ["sh", "-c", "ip route del default; ip route add default via 172.18.0.3; while true; do echo 'container_a running'; sleep 5; done"]
+    networks:
+      network_a:
+        ipv4_address: 172.18.0.2
+    
+  container_b:
+    container_name: container_b
+    image: busybox
+    privileged: true # permission required to change the subnet gateway to the impairment gateway
+    command: ["sh", "-c", "ip route del default; ip route add default via 172.19.0.3; while true; do echo 'container_b running'; sleep 5; done"]
+    networks:
+      network_b:
+        ipv4_address: 172.19.0.2
+    
+
+  impairment_gateway:
+    container_name: impairment_gateway
+    build:
+      context: .
+      dockerfile: Dockerfile
+    privileged: true
+    cap_add:
+      - NET_ADMIN
+    networks:
+      network_a:
+        ipv4_address: 172.18.0.3
+      network_b:
+        ipv4_address: 172.19.0.3
+    depends_on:
+      - container_a
+      - container_b
+
+networks:
+  network_a:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.18.0.0/16
+
+  network_b:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.19.0.0/16
