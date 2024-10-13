@@ -9,7 +9,7 @@ class SettingService(ISettingService):
         self.interface = interface
 
     async def set_impairment(self, payload: SetImpairment) -> Response:
-        return await Response(msg="Impairment set called", isError=False)
+        return Response(msg="Impairment set called", isError=False)
 
     async def delete_htb_netem_qdiscs(self) -> Response:
-        return "htb and netem qdisc added"
+        return Response(msg="htb and netem qdisc added", isError=False)
