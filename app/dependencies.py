@@ -7,6 +7,11 @@ from app.services.interfaces.ienvironment_service import IEnvironmentService
 from app.services.interfaces.isetting_service import ISettingService
 from app.services.setting_service import SettingService
 
+ip_address = "172.18.0.1"
+interface = "eth0"
+uplink_qdisc_class = "1:1"
+downlink_qdisc_class = "1:2"
+
 # def get_db():
 #     db = SessionLocal()
 #     try:
