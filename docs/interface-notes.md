@@ -7,7 +7,193 @@
 
 ## Configuration
 
+### YAML
 
+bearer link model
+```yaml
+title: 'Consumer Grade Satellite'
+description: Consumer satellite connections, such as those provided by HughesNet or Viasat, generally have higher latency than terrestrial connections due to geostationary orbit, and bandwidth is often shared among users, leading to lower speeds during peak times.
+img: url
+```
+
+bearer link model
+```yaml
+link: "uplink|downlink"
+hbt:
+  rate:
+    value: int
+    unit: "kbit|mbit|gbit"
+  ceil:
+    value: int
+    unit: "kbit|mbit|gbit"
+netem:
+  delay:
+    time:
+      time: int
+      jitter: int
+      correlation: int
+  loss:
+      percentage: int
+```
+
+environment model
+```yaml
+netem:
+    delay:
+      time: int
+      jitter: int
+      correlation: int
+    loss: 
+      percentage: int
+      interval: int
+      correlation: int
+    corrupt: 
+      percentage: int
+      correlation: int
+```
+
+settings model
+```yaml
+uplink:
+  hbt: # Bearer
+    rate:
+      value: int
+      unit: "kbit|mbit|gbit"
+    ceil:
+      value: int
+      unit: "kbit|mbit|gbit"
+  netem:
+    delay: # Bearer
+      time:
+        value: int
+        unit: "ms|s"
+      jitter:
+        value: int
+        unit: "ms|s"
+      correlation:
+        value: int
+        unit: "%"
+    loss: # Environment
+      percentage:
+        value: int
+        unit: "%"
+      interval:
+        value: int
+        unit: "ms|s"
+      correlation:
+        value: int
+        unit: "%"
+    corrupt: # Environment
+      percentage:
+        value: int
+        unit: "%"
+      correlation:
+        value: int
+        unit: "%"
+downlink:
+  hbt: # Bearer
+    rate:
+      value: int
+      unit: "kbit|mbit|gbit"
+    ceil:
+      value: int
+      unit: "kbit|mbit|gbit"
+  netem:
+    delay: # Bearer
+      time:
+        value: int
+        unit: "ms|s"
+      jitter:
+        value: int
+        unit: "ms|s"
+      correlation:
+        value: int
+        unit: "%"
+    loss: # Environment
+      percentage:
+        value: int
+        unit: "%"
+      interval:
+        value: int
+        unit: "ms|s"
+      correlation:
+        value: int
+        unit: "%"
+    corrupt: # Environment
+      percentage:
+        value: int
+        unit: "%"
+      correlation:
+        value: int
+        unit: "%"
+```
+
+
+```yaml
+interface: "eth0|eth1"
+ip-address: "ipv4"
+uplink:
+  qdisc-class:
+  hbt: # Bearer
+    rate:
+      value: int
+      unit: "kbit|mbit|gbit"
+    ceil:
+      value: int
+      unit: "kbit|mbit|gbit"
+  netem:
+    delay: # Bearer
+      time:
+        value: int
+        unit: "ms|s"
+      jitter:
+        value: int
+        unit: "ms|s"
+      correlation:
+        value: int
+        unit: "%"
+    loss: # Environment
+      percentage:
+        value: int
+        unit: "%"
+      interval:
+        value: int
+        unit: "ms|s"
+      correlation:
+        value: int
+        unit: "%"
+    reorder:
+      percentage:
+        value: int
+        unit: "%"
+      correlation:
+        value: int
+        unit: "%"
+      gap:
+        value: int
+        unit: "ms|s"
+    duplicate:
+      percentage:
+        value: int
+        unit: "%"
+      correlation:
+        value: int
+        unit: "%"
+    corrupt: # Environment
+      percentage:
+        value: int
+        unit: "%"
+      correlation:
+        value: int
+        unit: "%"
+
+
+```
+loss {loss.percentage.value}{loss.percentage.unit} {loss.interval.value}{loss.interval.unit} {loss.correlation.value}{loss.correlation.unit}
+reorder {reorder.percentage.value}{reorder.percentage.unit} {reorder.correlation.value}{reorder.correlation.unit} {reorder.gap.value}{reorder.gap.unit}
+duplicate {duplicate.percentage.value}{duplicate.percentage.unit} {duplicate.correlation.value}{duplicate.correlation.unit}
+corrupt {corrupt.percentage.value}{corrupt.percentage.unit} {corrupt.correlation.value}{corrupt.correlation.unit}
+### Json Schema
 ```json
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
@@ -57,6 +243,8 @@
   "additionalProperties": false
 }
 ```
+
+
 
 ```json
 {
