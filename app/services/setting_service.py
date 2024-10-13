@@ -1,3 +1,5 @@
+from app.dtos.response_dtos import Response
+from app.dtos.set_impairment_dtos import SetImpairment
 from app.services.interfaces.isetting_service import ISettingService
 
 
@@ -6,14 +8,8 @@ class SettingService(ISettingService):
     def __init__(self, interface: str):
         self.interface = interface
 
-    def create_htb_netem_qdiscs(self, payload):
-        return "htb and netem qdisc added"
+    async def set_impairment(self, payload: SetImpairment) -> Response:
+        return await Response(msg="Impairment set called", isError=False)
 
-    def update_htb(self, payload):
-        return "bandwidth updated"
-
-    def update_netem(self, payload):
-        return "netem updated"
-
-    def delete_htb_netem_qdiscs(self):
+    async def delete_htb_netem_qdiscs(self) -> Response:
         return "htb and netem qdisc added"
