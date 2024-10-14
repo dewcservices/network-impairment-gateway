@@ -1,23 +1,46 @@
 from typing import List
 
-from app.dtos.bearer_dtos import Bearer
-from app.dtos.response_dtos import Response
+from app.dtos.bearer_dtos import BearerDTO
+from app.dtos.response_dtos import ResponseDTO
+from app.repositories.interfaces.ibearer_repository import IBearerRepository
 from app.services.interfaces.ibearer_service import IBearerService
 
 
 class BearerService(IBearerService):
 
-    async def get_all(self) -> List[Bearer]:
-        return List[Bearer]()
+    def __init__(self, repo: IBearerRepository):
+        self.repo = repo
 
-    async def get(self, earer_id: int) -> Bearer:
-        return Bearer()
+    def get_all(self) -> List[BearerDTO]:
+        return self.repo.get_all()
 
-    async def create(self, dto: Bearer) -> Response:
-        return Response(msg="bearer create", isError=False)
+    def get(self, bearer_id: int) -> BearerDTO:
+        return self.repo.get_by_id_eager(bearer_id)
 
-    async def update(self, bearer_id: int, dto: Bearer) -> Response:
-        return Response(msg="bearer update", isError=False)
+    def create(self, dto: BearerDTO) -> ResponseDTO:
+        self.repo.create(title=dto.title, description=dto.description, img=dto.img)
+        # for link in dto.links:
+        #     self.repo.create_bearer_link(
+        #         id=bearer.id,
+        #         link_type_id=link.link_type_id,
+        #         hbt_rate=link.hbt_rate,
+        #         hbt_ceil=link.hbt_ceil,
+        #     )
+        # return bearer.id
+        return ResponseDTO(msg="bearer created", isError=False)
 
-    async def delete(self, bearer_id: int) -> Response:
-        return Response(msg="bearer delete", isError=False)
+    def update(self, bearer_id: int, dto: BearerDTO) -> ResponseDTO:
+        # self.repo.update(id=bearer_id, title=dto.title, description=dto.description, img=dto.img)
+        # for link in dto.links:
+        #     self.repo.create_bearer_link(
+        #         id=bearer.id,
+        #         link_type_id=link.link_type_id,
+        #         hbt_rate=link.hbt_rate,
+        #         hbt_ceil=link.hbt_ceil,
+        #     )
+        # return bearer.id
+        return ResponseDTO(msg="bearer updated", isError=False)
+
+    def delete(self, bearer_id: int) -> ResponseDTO:
+        self.repo.delete(bearer_id)
+        return ResponseDTO(msg="bearer deleted", isError=False)

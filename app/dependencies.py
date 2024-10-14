@@ -1,5 +1,11 @@
-# from sqlalchemy.orm import Session
-# from app.database import SessionLocal
+from fastapi import Depends
+from sqlalchemy.orm import Session
+
+from app.database import SessionLocal
+from app.repositories.bearer_repository import BearerRepository
+from app.repositories.environment_repository import EnvironmentRepository
+from app.repositories.interfaces.ibearer_repository import IBearerRepository
+from app.repositories.interfaces.ienvironment_repository import IEnvironmentRepository
 from app.services.bearer_service import BearerService
 from app.services.environment_service import EnvironmentService
 from app.services.interfaces.ibearer_service import IBearerService
@@ -12,28 +18,33 @@ interface = "eth0"
 uplink_qdisc_class = "1:1"
 downlink_qdisc_class = "1:2"
 
-# def get_db():
-#     db = SessionLocal()
-#     try:
-#         yield db
-#     finally:
-#         db.close()
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 
-# def get_bearer_repository(db: Session = Depends(get_db)) -> IBearerRepository:
-#     return BearerRepository(db)
+def get_bearer_repository(db_session: Session = Depends(get_db)) -> IBearerRepository:
+    return BearerRepository(db_session)
 
 
-# def get_env_repository(db: Session = Depends(get_db)) -> IEnvironmentRepository:
-#     return EnvironmentRepository(db)
+def get_env_repository(db_session: Session = Depends(get_db)) -> IEnvironmentRepository:
+    return EnvironmentRepository(db_session)
 
 
-def get_bearer_service() -> IBearerService:
-    return BearerService()
+def get_bearer_service(
+    repo: IBearerRepository = Depends(get_bearer_repository),
+) -> IBearerService:
+    return BearerService(repo)
 
 
-def get_env_service() -> IEnvironmentService:
-    return EnvironmentService()
+def get_env_service(
+    repo: IEnvironmentRepository = Depends(get_env_repository),
+) -> IEnvironmentService:
+    return EnvironmentService(repo)
 
 
 def get_setting_service() -> ISettingService:

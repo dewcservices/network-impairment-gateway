@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 
 
-class NetemDelay(BaseModel):
+class NetemDelayDTO(BaseModel):
     time: int = Field(..., description="The delay time in milliseconds")
     jitter: int = Field(..., description="The jitter in milliseconds")
     correlation: int = Field(
@@ -9,7 +9,7 @@ class NetemDelay(BaseModel):
     )
 
 
-class NetemLoss(BaseModel):
+class NetemLossDTO(BaseModel):
     percentage: int = Field(
         ..., ge=0, le=100, description="The loss percentage between 0 and 100"
     )
@@ -19,7 +19,7 @@ class NetemLoss(BaseModel):
     )
 
 
-class NetemCorrupt(BaseModel):
+class NetemCorruptDTO(BaseModel):
     percentage: int = Field(
         ..., ge=0, le=100, description="The corruption percentage between 0 and 100"
     )

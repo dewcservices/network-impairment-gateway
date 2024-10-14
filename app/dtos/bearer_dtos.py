@@ -1,24 +1,26 @@
-from typing import Optional
+from typing import Dict, Optional
 
 from pydantic import BaseModel, Field, HttpUrl
 
-from app.dtos.hbt_dtos import HBT
-from app.dtos.netem_dtos import NetemDelay, NetemLoss
+from app.dtos.hbt_dtos import HBTDTO
+from app.dtos.netem_dtos import NetemDelayDTO, NetemLossDTO
 
 
-class BearerNetem(BaseModel):
-    delay: NetemDelay
-    loss: NetemLoss
+class BearerNetemDTO(BaseModel):
+    delay: NetemDelayDTO = Field(..., description="The Netem delay model")
+    loss: NetemLossDTO = Field(..., description="The Netem loss model")
 
 
-class BearerLink(BaseModel):
-    hbt: HBT = Field(..., description="The HBT model containing rate and ceil values")
-    netem: BearerNetem = Field(
+class BearerLinkDTO(BaseModel):
+    hbt: HBTDTO = Field(
+        ..., description="The HBT model containing rate and ceil values"
+    )
+    netem: BearerNetemDTO = Field(
         ..., description="The NETEM model containing delay, loss values"
     )
 
 
-class Bearer(BaseModel):
+class BearerDTO(BaseModel):
     title: str = Field(
         ..., min_length=5, max_length=100, description="Title of the bearer"
     )
@@ -31,5 +33,4 @@ class Bearer(BaseModel):
     img: Optional[HttpUrl] = Field(
         None, description="A URL for an image representing the bearer"
     )
-    links: BearerLink
-    downlink: BearerLink
+    links: Dict[str, BearerLinkDTO] = Field(..., description="Bearer Links")

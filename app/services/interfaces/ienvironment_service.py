@@ -1,27 +1,27 @@
 from abc import ABC, abstractmethod
 from typing import List
 
-from app.dtos.environment_dtos import Environment
-from app.dtos.response_dtos import Response
+from app.dtos.environment_dtos import EnvironmentDTO
+from app.dtos.response_dtos import ResponseDTO
 
 
 class IEnvironmentService(ABC):
     @abstractmethod
-    async def get_all(self) -> List[Environment]:
+    def get_all(self) -> List[EnvironmentDTO]:
         pass
 
     @abstractmethod
-    async def get(self, env_id: int) -> Environment:
+    def get(self, env_id: int) -> EnvironmentDTO:
         pass
 
     @abstractmethod
-    async def create(self, dto: Environment) -> Response:
+    def create(self, dto: EnvironmentDTO) -> ResponseDTO:
         pass
 
     @abstractmethod
-    async def update(self, env_id: int, dto: Environment) -> Response:
+    def update(self, env_id: int, dto: EnvironmentDTO) -> ResponseDTO:
         pass
 
     @abstractmethod
-    async def delete(self, env_id: int) -> Response:
+    def delete(self, env_id: int) -> ResponseDTO:
         pass

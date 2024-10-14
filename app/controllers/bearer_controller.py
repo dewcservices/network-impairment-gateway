@@ -3,43 +3,47 @@ from typing import List
 from fastapi import APIRouter, Depends
 
 from app.dependencies import get_bearer_service
-from app.dtos.bearer_dtos import Bearer
-from app.dtos.response_dtos import Response
+from app.dtos.bearer_dtos import BearerDTO
+from app.dtos.response_dtos import ResponseDTO
 from app.services.interfaces.ibearer_service import IBearerService
 
 router = APIRouter(prefix="/api/bearers")
 
 
 @router.get("/")
-async def get_all(
+def get_all(
     service: IBearerService = Depends(get_bearer_service),
-) -> List[Bearer]:
-    return await service.get_all()
+) -> List[BearerDTO]:
+    temp = service.get_all()
+    print(temp)
+    return temp
 
 
 @router.get("/{bearer_id}")
-async def get(
+def get(
     bearer_id: int, service: IBearerService = Depends(get_bearer_service)
-) -> Bearer:
-    return await service.get(bearer_id)
+) -> BearerDTO:
+    return service.get(bearer_id)
 
 
 @router.post("/")
-async def create(
-    dto: Bearer, service: IBearerService = Depends(get_bearer_service)
-) -> Response:
-    return await service.create(dto)
+def create(
+    dto: BearerDTO, service: IBearerService = Depends(get_bearer_service)
+) -> ResponseDTO:
+    return service.create(dto)
 
 
 @router.put("/{bearer_id}")
-async def update(
-    bearer_id: int, dto: Bearer, service: IBearerService = Depends(get_bearer_service)
-) -> Response:
-    return await service.update(bearer_id, dto)
+def update(
+    bearer_id: int,
+    dto: BearerDTO,
+    service: IBearerService = Depends(get_bearer_service),
+) -> ResponseDTO:
+    return service.update(bearer_id, dto)
 
 
 @router.delete("/{bearer_id}")
-async def delete(
+def delete(
     bearer_id: int, service: IBearerService = Depends(get_bearer_service)
-) -> Response:
-    return await service.delete(bearer_id)
+) -> ResponseDTO:
+    return service.delete(bearer_id)
