@@ -14,7 +14,9 @@ router = APIRouter(prefix="/api/environments")
 def get_all(
     service: IEnvironmentService = Depends(get_env_service),
 ) -> List[EnvironmentDTO]:
-    return service.get_all()
+    temp = service.get_all()
+    print(temp)
+    return temp
 
 
 @router.get("/{env_id}")

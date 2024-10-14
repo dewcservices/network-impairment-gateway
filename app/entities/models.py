@@ -2,13 +2,15 @@ from sqlalchemy import (
     Boolean,
     Column,
     DateTime,
+    ForeignKey,
     Integer,
     String,
     Text,
     func,
 )
+from sqlalchemy.orm import relationship
 
-from app.database import Base
+from app.database import Base, engine
 
 
 class SystemState(Base):
@@ -33,104 +35,104 @@ class Bearer(Base):
     img = Column(String(255), nullable=True)  # Assuming this is a URL string
     active = Column(Boolean, nullable=True, default=True)
 
-    # # Relationship with BearerLink
-    # bearer_links = relationship(
-    #     "BearerLink", back_populates="bearer", cascade="all, delete-orphan"
-    # )
+    # Relationship with BearerLink
+    bearer_links = relationship(
+        "BearerLink", back_populates="bearer", cascade="all, delete-orphan"
+    )
 
     def __repr__(self):
         return f"<Bearer(title='{self.title}', description='{self.description}', img='{self.img}')>"
 
 
-# class BearerLinkType(Base):
-#     __tablename__ = "bearer_link_types"
-#     id = Column(Integer, primary_key=True, autoincrement=True)
-#     title = Column(String(255), nullable=False)
+class BearerLinkType(Base):
+    __tablename__ = "bearer_link_types"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    title = Column(String(255), nullable=False)
 
-#     # Relationship with BearerLink
-#     bearer_links = relationship("BearerLink", back_populates="bearer_link_type")
+    # Relationship with BearerLink
+    bearer_links = relationship("BearerLink", back_populates="bearer_link_type")
 
-#     def __repr__(self):
-#         return f"<BearerLinkType(title='{self.title}')>"
-
-
-# # BearerLink model representing uplink and downlink links
-# class BearerLink(Base):
-#     __tablename__ = "bearer_links"
-
-#     id = Column(Integer, primary_key=True, autoincrement=True)
-#     bearer_id = Column(Integer, ForeignKey("bearers.id"), nullable=False)
-#     link_type_id = Column(
-#         Integer, ForeignKey("bearer_link_types.id"), nullable=False
-#     )  # 'uplink' or 'downlink'
-
-#     # Relationship back to Bearer
-#     bearer = relationship("Bearer", back_populates="bearer_links")
-
-#     # Relationship back to BearerLinkType
-#     bearer_link_type = relationship("BearerLinkType", back_populates="bearer_links")
-
-#     # Relationship with HBT, Netem (These will store the detailed network characteristics)
-#     bearer_link_hbt = relationship(
-#         "BearerLinkHBT",
-#         uselist=False,
-#         back_populates="bearer_link",
-#         cascade="all, delete-orphan",
-#     )
-#     bearer_link_netem = relationship(
-#         "BearerLinkNetem",
-#         uselist=False,
-#         back_populates="bearer_link",
-#         cascade="all, delete-orphan",
-#     )
-
-#     def __repr__(self):
-#         return f"<BearerLinkbearer_id='{self.bearer_id}', link_type_id='{self.link_type_id}')>"
+    def __repr__(self):
+        return f"<BearerLinkType(title='{self.title}')>"
 
 
-# # HBT (Hierarchical Token Bucket) for the rate and ceil values
-# class BearerLinkHBT(Base):
-#     __tablename__ = "bearer_link_hbts"
+# BearerLink model representing uplink and downlink links
+class BearerLink(Base):
+    __tablename__ = "bearer_links"
 
-#     id = Column(Integer, primary_key=True, autoincrement=True)
-#     bearer_link_id = Column(Integer, ForeignKey("bearer_links.id"), nullable=False)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    bearer_id = Column(Integer, ForeignKey("bearers.id"), nullable=False)
+    link_type_id = Column(
+        Integer, ForeignKey("bearer_link_types.id"), nullable=False
+    )  # 'uplink' or 'downlink'
 
-#     rate = Column(String(10), nullable=False)  # 'kbit', 'mbit', 'gbit'
-#     ceil = Column(String(10), nullable=False)  # 'kbit', 'mbit', 'gbit'
+    # Relationship back to Bearer
+    bearer = relationship("Bearer", back_populates="bearer_links")
 
-#     bearer_link = relationship("BearerLink", back_populates="bearer_link_hbt")
+    # Relationship back to BearerLinkType
+    bearer_link_type = relationship("BearerLinkType", back_populates="bearer_links")
 
-#     def __repr__(self):
-#         return f"<HBT(rate='{self.rate}', ceil='{self.ceil}')>"
+    # Relationship with HBT, Netem (These will store the detailed network characteristics)
+    bearer_link_hbt = relationship(
+        "BearerLinkHBT",
+        uselist=False,
+        back_populates="bearer_link",
+        cascade="all, delete-orphan",
+    )
+    bearer_link_netem = relationship(
+        "BearerLinkNetem",
+        uselist=False,
+        back_populates="bearer_link",
+        cascade="all, delete-orphan",
+    )
+
+    def __repr__(self):
+        return f"<BearerLinkbearer_id='{self.bearer_id}', link_type_id='{self.link_type_id}')>"
 
 
-# # Netem (Network Emulation) for delay, jitter, loss, etc.
-# class BearerLinkNetem(Base):
-#     __tablename__ = "bearer_link_netems"
+# HBT (Hierarchical Token Bucket) for the rate and ceil values
+class BearerLinkHBT(Base):
+    __tablename__ = "bearer_link_hbts"
 
-#     id = Column(Integer, primary_key=True, autoincrement=True)
-#     bearer_link_id = Column(Integer, ForeignKey("bearer_links.id"), nullable=False)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    bearer_link_id = Column(Integer, ForeignKey("bearer_links.id"), nullable=False)
 
-#     # Delay settings
-#     delay_time = Column(Integer, nullable=False, default=0)  # 'ms'
+    rate = Column(String(10), nullable=False)  # 'kbit', 'mbit', 'gbit'
+    ceil = Column(String(10), nullable=False)  # 'kbit', 'mbit', 'gbit'
 
-#     # Jitter settings
-#     delay_jitter = Column(Integer, nullable=False, default=0)  # 'ms'
-#     delay_correlation = Column(
-#         Integer, nullable=False, default=0
-#     )  # percentage value (0-100)
+    bearer_link = relationship("BearerLink", back_populates="bearer_link_hbt")
 
-#     # Loss settings
-#     loss_percentage = Column(Integer, nullable=False, default=0)  # percentage
-#     loss_interval = Column(Integer, nullable=False, default=0)  # 'ms'
-#     loss_correlation = Column(
-#         Integer, nullable=False, default=0
-#     )  # percentage value (0-100)
+    def __repr__(self):
+        return f"<HBT(rate='{self.rate}', ceil='{self.ceil}')>"
 
-#     bearer_link = relationship("BearerLink", back_populates="bearer_link_netem")
 
-#     def __repr__(self):
-#         return f"<BearerNetem(delay='{self.delay_time}', jitter='{self.delay_jitter}', correlation='{self.delay_correlation}%', loss_percentage='{self.loss_percentage}', loss_interval='{self.loss_interval}', loss_correlation='{self.loss_correlation}')>"
+# Netem (Network Emulation) for delay, jitter, loss, etc.
+class BearerLinkNetem(Base):
+    __tablename__ = "bearer_link_netems"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    bearer_link_id = Column(Integer, ForeignKey("bearer_links.id"), nullable=False)
+
+    # Delay settings
+    delay_time = Column(Integer, nullable=False, default=0)  # 'ms'
+
+    # Jitter settings
+    delay_jitter = Column(Integer, nullable=False, default=0)  # 'ms'
+    delay_correlation = Column(
+        Integer, nullable=False, default=0
+    )  # percentage value (0-100)
+
+    # Loss settings
+    loss_percentage = Column(Integer, nullable=False, default=0)  # percentage
+    loss_interval = Column(Integer, nullable=False, default=0)  # 'ms'
+    loss_correlation = Column(
+        Integer, nullable=False, default=0
+    )  # percentage value (0-100)
+
+    bearer_link = relationship("BearerLink", back_populates="bearer_link_netem")
+
+    def __repr__(self):
+        return f"<BearerNetem(delay='{self.delay_time}', jitter='{self.delay_jitter}', correlation='{self.delay_correlation}%', loss_percentage='{self.loss_percentage}', loss_interval='{self.loss_interval}', loss_correlation='{self.loss_correlation}')>"
 
 
 class Environment(Base):
@@ -141,41 +143,44 @@ class Environment(Base):
     active = Column(Boolean, nullable=True, default=True)
 
     # Relationship with BearerLink
-    # environment_netem = relationship(
-    #     "EnvironmentNetem", back_populates="environment", cascade="all, delete-orphan"
-    # )
+    environment_netem = relationship(
+        "EnvironmentNetem", back_populates="environment", cascade="all, delete-orphan"
+    )
 
     def __repr__(self):
         return f"<Environment(title='{self.title}', description='{self.description}')>"
 
 
-# class EnvironmentNetem(Base):
-#     __tablename__ = "environment_netems"
-#     id = Column(Integer, primary_key=True, autoincrement=True)
-#     environment_id = Column(Integer, ForeignKey("environments.id"), nullable=False)
+class EnvironmentNetem(Base):
+    __tablename__ = "environment_netems"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    environment_id = Column(Integer, ForeignKey("environments.id"), nullable=False)
 
-#     # Delay settings
-#     delay_time = Column(Integer, nullable=False, default=0)  # 'ms'
+    # Delay settings
+    delay_time = Column(Integer, nullable=False, default=0)  # 'ms'
 
-#     # Jitter settings
-#     delay_jitter = Column(Integer, nullable=False, default=0)  # 'ms'
-#     delay_correlation = Column(
-#         Integer, nullable=False, default=0
-#     )  # percentage value (0-100)
+    # Jitter settings
+    delay_jitter = Column(Integer, nullable=False, default=0)  # 'ms'
+    delay_correlation = Column(
+        Integer, nullable=False, default=0
+    )  # percentage value (0-100)
 
-#     # Loss settings
-#     loss_percentage = Column(Integer, nullable=False, default=0)  # percentage
-#     loss_interval = Column(Integer, nullable=False, default=0)  # 'ms'
-#     loss_correlation = Column(
-#         Integer, nullable=False, default=0
-#     )  # percentage value (0-100)
+    # Loss settings
+    loss_percentage = Column(Integer, nullable=False, default=0)  # percentage
+    loss_interval = Column(Integer, nullable=False, default=0)  # 'ms'
+    loss_correlation = Column(
+        Integer, nullable=False, default=0
+    )  # percentage value (0-100)
 
-#     corrupt_percentage = Column(Integer, nullable=False, default=0)  # percentage
-#     corrupt_correlation = Column(
-#         Integer, nullable=False, default=0
-#     )  # percentage value (0-100)
+    corrupt_percentage = Column(Integer, nullable=False, default=0)  # percentage
+    corrupt_correlation = Column(
+        Integer, nullable=False, default=0
+    )  # percentage value (0-100)
 
-#     environment = relationship("Environment", back_populates="environment_netem")
+    environment = relationship("Environment", back_populates="environment_netem")
 
-#     def __repr__(self):
-#         return f"<BearerNetem(delay_time='{self.delay_time}', delay_jitter='{self.delay_jitter}', delay_correlation='{self.delay_correlation}%', loss_percentage='{self.loss_percentage}', loss_interval='{self.loss_interval}', loss_correlation='{self.loss_correlation}', corrupt_percentage='{self.corrupt_percentage}', corrupt_correlation='{self.corrupt_correlation}')>"
+    def __repr__(self):
+        return f"<BearerNetem(delay_time='{self.delay_time}', delay_jitter='{self.delay_jitter}', delay_correlation='{self.delay_correlation}%', loss_percentage='{self.loss_percentage}', loss_interval='{self.loss_interval}', loss_correlation='{self.loss_correlation}', corrupt_percentage='{self.corrupt_percentage}', corrupt_correlation='{self.corrupt_correlation}')>"
+
+
+Base.metadata.create_all(bind=engine)

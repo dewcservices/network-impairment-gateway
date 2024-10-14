@@ -1,8 +1,8 @@
 from typing import List, Optional
 
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
-from app.entities.models import Environment
+from app.entities.models import Environment, EnvironmentNetem
 from app.repositories.interfaces.ienvironment_repository import IEnvironmentRepository
 
 
@@ -16,16 +16,14 @@ class EnvironmentRepository(IEnvironmentRepository):
     def get_by_id(self, id: int) -> Optional[Environment]:
         return self.db_session.query(Environment).filter(Environment.id == id).first()
 
-        # Get bearer by id, eager loading links, hbt, and netem relationships
-
+    # Get bearer by id, eager loading links, hbt, and netem relationships
     def get_by_id_eager(self, id: int) -> Optional[Environment]:
-        return self.get_by_id(id)
-        # return (
-        #     self.db_session.query(Environment)
-        #     .options(joinedload(Environment.environment_netem))
-        #     .filter(Environment.id == id)
-        #     .first()
-        # )
+        return (
+            self.db_session.query(Environment)
+            .options(joinedload(Environment.environment_netem))
+            .filter(Environment.id == id)
+            .first()
+        )
 
     # Update an existing bearer
     def update(
@@ -60,17 +58,17 @@ class EnvironmentRepository(IEnvironmentRepository):
         netem_corrupt_correlation: int,
     ) -> Environment:
         new_environment = Environment(title=title, description=description)
-        # new_netem = EnvironmentNetem(
-        #     delay_time=netem_delay_time,
-        #     netem_delay_jitter=netem_delay_jitter,
-        #     delay_correlation=delay_correlation,
-        #     netem_loss_percentage=netem_loss_percentage,
-        #     netem_loss_interval=netem_loss_interval,
-        #     netem_loss_correlation=netem_loss_correlation,
-        #     netem_corrupt_percentage=netem_corrupt_percentage,
-        #     netem_corrupt_correlation=netem_corrupt_correlation,
-        # )
-        # new_environment.environment_netem = new_netem
+        new_netem = EnvironmentNetem(
+            delay_time=netem_delay_time,
+            netem_delay_jitter=netem_delay_jitter,
+            delay_correlation=delay_correlation,
+            netem_loss_percentage=netem_loss_percentage,
+            netem_loss_interval=netem_loss_interval,
+            netem_loss_correlation=netem_loss_correlation,
+            netem_corrupt_percentage=netem_corrupt_percentage,
+            netem_corrupt_correlation=netem_corrupt_correlation,
+        )
+        new_environment.environment_netem = new_netem
         self.db_session.add(new_environment)
         self.db_session.commit()
         return new_environment
