@@ -18,7 +18,7 @@ class BearerService(IBearerService):
         return self.repo.get_by_id_eager(bearer_id)
 
     def create(self, dto: BearerDTO) -> ResponseDTO:
-        self.repo.create(title=dto.title, description=dto.description, img=dto.img)
+        self.repo.create(title=dto.title, description=dto.description, img=str(dto.img))
         # for link in dto.links:
         #     self.repo.create_bearer_link(
         #         id=bearer.id,

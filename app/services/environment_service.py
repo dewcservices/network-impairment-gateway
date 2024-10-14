@@ -17,10 +17,10 @@ class EnvironmentService(IEnvironmentService):
         return EnvironmentDTO()
 
     def create(self, dto: EnvironmentDTO) -> ResponseDTO:
-        return ResponseDTO(msg="environment create", isError=False)
+        return ResponseDTO(msg="environment created", isError=False)
 
     def update(self, env_id: int, dto: EnvironmentDTO) -> ResponseDTO:
-        return ResponseDTO(msg="environment update", isError=False)
+        return ResponseDTO(msg="environment updated", isError=False)
 
     def delete(self, env_id: int) -> ResponseDTO:
-        return ResponseDTO(msg="environment delete", isError=False)
+        return ResponseDTO(msg="environment deleted", isError=False)
