@@ -15,7 +15,7 @@ class BearerService(IBearerService):
         self.repo = repo
 
     def get_all(self) -> List[BearerDetailsDTO]:
-        return self.repo.get_all()
+        return BearerAdapter.BearersToBearerDetailsDTOs(self.repo.get_all())
 
     def get(self, bearer_id: int) -> BearerDTO:
         bearer = self.repo.get_by_id_eager(bearer_id)
@@ -25,17 +25,17 @@ class BearerService(IBearerService):
             )
         return BearerAdapter.BearerToBearerDTO(bearer)
 
-        return
-
     def create(self, dto: BearerDTO) -> ResponseDTO:
-        self.repo.create(title=dto.title, description=dto.description, img=str(dto.img))
-        # for link in dto.links:
-        #     self.repo.create_bearer_link(
-        #         id=bearer.id,
-        #         link_type_id=link.link_type_id,
-        #         hbt_rate=link.hbt_rate,
-        #         hbt_ceil=link.hbt_ceil,
-        #     )
+        bearer = self.repo.create(
+            title=dto.title, description=dto.description, img=str(dto.img)
+        )
+        for link in dto.links:
+            self.repo.create_bearer_link(
+                id=bearer.id,
+                link_type_id=link.link_type_id,
+                hbt_rate=link.hbt_rate,
+                hbt_ceil=link.hbt_ceil,
+            )
         # return bearer.id
         return ResponseDTO(msg="bearer created", isError=False)
 
