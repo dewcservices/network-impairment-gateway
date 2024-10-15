@@ -19,7 +19,7 @@ users:
    ssh_authorized_keys:
       - <user-public-key>
    shell: /bin/bash
- - name: dewc-admin
+ - name: <admin-user>
    sudo: ALL=(ALL) NOPASSWD:ALL
    passwd: <admin-password>
    lock_passwd: false
