@@ -1,6 +1,9 @@
 from typing import List
 
-from app.dtos.bearer_dtos import BearerDTO
+from fastapi import HTTPException
+
+from app.adapters.bearer_adapter import BearerAdapter
+from app.dtos.bearer_dtos import BearerDetailsDTO, BearerDTO
 from app.dtos.response_dtos import ResponseDTO
 from app.repositories.interfaces.ibearer_repository import IBearerRepository
 from app.services.interfaces.ibearer_service import IBearerService
@@ -11,11 +14,18 @@ class BearerService(IBearerService):
     def __init__(self, repo: IBearerRepository):
         self.repo = repo
 
-    def get_all(self) -> List[BearerDTO]:
+    def get_all(self) -> List[BearerDetailsDTO]:
         return self.repo.get_all()
 
     def get(self, bearer_id: int) -> BearerDTO:
-        return self.repo.get_by_id_eager(bearer_id)
+        bearer = self.repo.get_by_id_eager(bearer_id)
+        if bearer is None:
+            raise HTTPException(
+                status_code=404, detail=f"Bearer id {bearer_id} not found"
+            )
+        return BearerAdapter.BearerToBearerDTO(bearer)
+
+        return
 
     def create(self, dto: BearerDTO) -> ResponseDTO:
         self.repo.create(title=dto.title, description=dto.description, img=str(dto.img))

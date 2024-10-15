@@ -26,3 +26,22 @@ class EnvironmentDTO(BaseModel):
     netem: EnvironmentNetemDTO = Field(
         ..., description="The NETEM model containing delay, loss and corrupt values"
     )
+
+
+class EnvironmentDetailsDTO(BaseModel):
+    id: int = Field(
+        ...,
+        description="Environment primary key",
+    )
+    title: str = Field(
+        ..., min_length=5, max_length=100, description="Title of the bearer"
+    )
+    description: str = Field(
+        ...,
+        min_length=10,
+        max_length=500,
+        description="A description of the satellite or bearer connection",
+    )
+
+    class Config:
+        from_attributes = True  # Equivalent to orm_mode

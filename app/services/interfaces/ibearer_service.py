@@ -1,13 +1,13 @@
 from abc import ABC, abstractmethod
 from typing import List
 
-from app.dtos.bearer_dtos import BearerDTO
+from app.dtos.bearer_dtos import BearerDetailsDTO, BearerDTO
 from app.dtos.response_dtos import ResponseDTO
 
 
 class IBearerService(ABC):
     @abstractmethod
-    def get_all(self) -> List[BearerDTO]:
+    def get_all(self) -> List[BearerDetailsDTO]:
         pass
 
     @abstractmethod

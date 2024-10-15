@@ -34,3 +34,22 @@ class BearerDTO(BaseModel):
         None, description="A URL for an image representing the bearer"
     )
     links: Dict[str, BearerLinkDTO] = Field(..., description="Bearer Links")
+
+
+class BearerDetailsDTO(BaseModel):
+    id: int = Field(
+        ...,
+        description="Environment primary key",
+    )
+    title: str = Field(
+        ..., min_length=5, max_length=100, description="Title of the bearer"
+    )
+    description: str = Field(
+        ...,
+        min_length=10,
+        max_length=500,
+        description="A description of the satellite or bearer connection",
+    )
+    img: Optional[HttpUrl] = Field(
+        None, description="A URL for an image representing the bearer"
+    )
