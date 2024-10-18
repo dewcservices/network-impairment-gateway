@@ -9,7 +9,13 @@ class HBTValueDTO(BaseModel):
         ..., description="The unit for the value, can be 'kbit', 'mbit', or 'gbit'"
     )
 
+    class Config:
+        from_attributes = True  # Equivalent to orm_mode
+
 
 class HBTDTO(BaseModel):
     rate: HBTValueDTO = Field(..., description="The rate value")
     ceil: HBTValueDTO = Field(..., description="The ceil value")
+
+    class Config:
+        from_attributes = True  # Equivalent to orm_mode

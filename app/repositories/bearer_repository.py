@@ -23,8 +23,10 @@ class BearerRepository(IBearerRepository):
         return (
             self.db_session.query(Bearer)
             .options(
-                joinedload(Bearer.bearer_links).joinedload(BearerLink.hbt),
-                joinedload(Bearer.bearer_links).joinedload(BearerLink.netem),
+                joinedload(Bearer.bearer_links).joinedload(BearerLink.bearer_link_hbt),
+                joinedload(Bearer.bearer_links).joinedload(
+                    BearerLink.bearer_link_netem
+                ),
             )
             .filter(Bearer.id == id)
             .first()
@@ -129,10 +131,11 @@ class BearerRepository(IBearerRepository):
         self.db_session.commit()
         return link
 
-    def delete(self, id: int):
+    def delete(self, id: int) -> bool:
         bearer = self.get_by_id(id)
         if not bearer:
-            return None
+            return False
 
         bearer.active = False
         self.db_session.commit()
+        return True

@@ -15,8 +15,9 @@ from app.database import Base, engine
 
 class SystemState(Base):
     __tablename__ = "system_states"
-    bearer_id = Column(Integer, primary_key=True)
-    environment_id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    bearer_id = Column(Integer)
+    environment_id = Column(Integer)
     # Timestamp column for when the row is updated
     updated_at = Column(
         DateTime, server_default=func.now(), onupdate=func.now(), nullable=False

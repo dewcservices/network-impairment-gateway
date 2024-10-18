@@ -6,12 +6,14 @@ from app.repositories.bearer_repository import BearerRepository
 from app.repositories.environment_repository import EnvironmentRepository
 from app.repositories.interfaces.ibearer_repository import IBearerRepository
 from app.repositories.interfaces.ienvironment_repository import IEnvironmentRepository
+from app.repositories.interfaces.isystem_state_repository import ISystemStateRepository
+from app.repositories.system_state_repository import SystemStateRepository
 from app.services.bearer_service import BearerService
 from app.services.environment_service import EnvironmentService
 from app.services.interfaces.ibearer_service import IBearerService
 from app.services.interfaces.ienvironment_service import IEnvironmentService
-from app.services.interfaces.isetting_service import ISettingService
-from app.services.setting_service import SettingService
+from app.services.interfaces.isystem_state_service import ISystemStateService
+from app.services.system_state_service import SystemStateService
 
 ip_address = "172.18.0.1"
 interface = "eth0"
@@ -35,6 +37,12 @@ def get_env_repository(db_session: Session = Depends(get_db)) -> IEnvironmentRep
     return EnvironmentRepository(db_session)
 
 
+def get_system_state_repository(
+    db_session: Session = Depends(get_db),
+) -> ISystemStateRepository:
+    return SystemStateRepository(db_session)
+
+
 def get_bearer_service(
     repo: IBearerRepository = Depends(get_bearer_repository),
 ) -> IBearerService:
@@ -47,5 +55,7 @@ def get_env_service(
     return EnvironmentService(repo)
 
 
-def get_setting_service() -> ISettingService:
-    return SettingService()
+def get_setting_service(
+    repo: ISystemStateRepository = Depends(get_system_state_repository),
+) -> ISystemStateService:
+    return SystemStateService(repo)

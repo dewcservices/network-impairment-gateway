@@ -1,6 +1,5 @@
 from pydantic import BaseModel, Field
 
-from app.dtos.hbt_dtos import HBTDTO
 from app.dtos.netem_dtos import NetemCorruptDTO, NetemDelayDTO, NetemLossDTO
 
 
@@ -8,6 +7,9 @@ class EnvironmentNetemDTO(BaseModel):
     delay: NetemDelayDTO = Field(..., description="The Netem delay model")
     loss: NetemLossDTO = Field(..., description="The Netem delay model")
     corrupt: NetemCorruptDTO = Field(..., description="The Netem corrupt model")
+
+    class Config:
+        from_attributes = True  # Equivalent to orm_mode
 
 
 class EnvironmentDTO(BaseModel):
@@ -20,12 +22,12 @@ class EnvironmentDTO(BaseModel):
         max_length=500,
         description="A description of the satellite or bearer connection",
     )
-    hbt: HBTDTO = Field(
-        ..., description="The HBT model containing rate and ceil values"
-    )
     netem: EnvironmentNetemDTO = Field(
         ..., description="The NETEM model containing delay, loss and corrupt values"
     )
+
+    class Config:
+        from_attributes = True  # Equivalent to orm_mode
 
 
 class EnvironmentDetailsDTO(BaseModel):

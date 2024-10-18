@@ -3,7 +3,7 @@ from typing import List
 from fastapi import APIRouter, Depends
 
 from app.dependencies import get_bearer_service
-from app.dtos.bearer_dtos import BearerDTO
+from app.dtos.bearer_dtos import BearerDetailsDTO, BearerDTO
 from app.dtos.response_dtos import ResponseDTO
 from app.services.interfaces.ibearer_service import IBearerService
 
@@ -13,7 +13,7 @@ router = APIRouter(prefix="/api/bearers")
 @router.get("/")
 def get_all(
     service: IBearerService = Depends(get_bearer_service),
-) -> List[BearerDTO]:
+) -> List[BearerDetailsDTO]:
     temp = service.get_all()
     print(temp)
     return temp

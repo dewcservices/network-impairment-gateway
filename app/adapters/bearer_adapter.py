@@ -21,11 +21,7 @@ class BearerAdapter:
 
     @staticmethod
     def BearersToBearerDetailsDTOs(bearers: List[Bearer]) -> List[BearerDetailsDTO]:
-        bearerDtos = List[BearerDetailsDTO]()
-        for bearer in bearers:
-            bearerDtos.push(BearerDetailsDTO.model_validate(bearer))
-
-        return bearerDtos
+        return [BearerAdapter.BearerToBearerDetailsDTO(bearer) for bearer in bearers]
 
     @staticmethod
     def BearerDTOToBearer(dto: BearerDTO) -> Bearer:

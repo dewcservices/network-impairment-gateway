@@ -8,6 +8,9 @@ class NetemDelayDTO(BaseModel):
         ..., ge=0, le=100, description="The correlation percentage between 0 and 100"
     )
 
+    class Config:
+        from_attributes = True  # Equivalent to orm_mode
+
 
 class NetemLossDTO(BaseModel):
     percentage: int = Field(
@@ -18,6 +21,9 @@ class NetemLossDTO(BaseModel):
         ..., ge=0, le=100, description="The correlation percentage between 0 and 100"
     )
 
+    class Config:
+        from_attributes = True  # Equivalent to orm_mode
+
 
 class NetemCorruptDTO(BaseModel):
     percentage: int = Field(
@@ -26,3 +32,6 @@ class NetemCorruptDTO(BaseModel):
     correlation: int = Field(
         ..., ge=0, le=100, description="The correlation percentage between 0 and 100"
     )
+
+    class Config:
+        from_attributes = True  # Equivalent to orm_mode

@@ -5,3 +5,6 @@
 5. add alembic https://alembic.sqlalchemy.org/en/latest/tutorial.html
 6. create db migrations
 7. implement the tc_service and inject the service into settings_service 
+
+
+.\venv\Scripts\activate

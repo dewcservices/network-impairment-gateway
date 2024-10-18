@@ -62,5 +62,5 @@ class IBearerRepository(ABC):
     #     pass
 
     @abstractmethod
-    def delete(self, id: int):
+    def delete(self, id: int) -> bool:
         pass
