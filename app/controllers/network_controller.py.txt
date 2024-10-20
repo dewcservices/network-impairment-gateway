@@ -1,0 +1,15 @@
+from typing import List
+
+from fastapi import APIRouter
+
+from app.dependencies import get_env_service
+from app.dtos.environment_dtos import EnvironmentDTO
+from app.dtos.response_dtos import ResponseDTO
+from app.services.interfaces.ienvironment_service import IEnvironmentService
+
+router = APIRouter(prefix="/api/environments")
+
+
+@router.get("/")
+def get(service: ISystemStateService = Depends(get_setting_service)) -> SystemStateDTO:
+    return service.get()

@@ -48,7 +48,7 @@ class Bearer(Base):
 class BearerLinkType(Base):
     __tablename__ = "bearer_link_types"
     id = Column(Integer, primary_key=True, autoincrement=True)
-    title = Column(String(255), nullable=False)
+    title = Column(String(255), nullable=False, unique=True)
 
     # Relationship with BearerLink
     bearer_links = relationship("BearerLink", back_populates="bearer_link_type")
@@ -95,8 +95,9 @@ class BearerLink(Base):
 class BearerLinkHBT(Base):
     __tablename__ = "bearer_link_hbts"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    bearer_link_id = Column(Integer, ForeignKey("bearer_links.id"), nullable=False)
+    bearer_link_id = Column(
+        Integer, ForeignKey("bearer_links.id"), primary_key=True, nullable=False
+    )
 
     rate = Column(String(10), nullable=False)  # 'kbit', 'mbit', 'gbit'
     ceil = Column(String(10), nullable=False)  # 'kbit', 'mbit', 'gbit'
@@ -111,8 +112,9 @@ class BearerLinkHBT(Base):
 class BearerLinkNetem(Base):
     __tablename__ = "bearer_link_netems"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    bearer_link_id = Column(Integer, ForeignKey("bearer_links.id"), nullable=False)
+    bearer_link_id = Column(
+        Integer, ForeignKey("bearer_links.id"), primary_key=True, nullable=False
+    )
 
     # Delay settings
     delay_time = Column(Integer, nullable=False, default=0)  # 'ms'
@@ -154,8 +156,9 @@ class Environment(Base):
 
 class EnvironmentNetem(Base):
     __tablename__ = "environment_netems"
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    environment_id = Column(Integer, ForeignKey("environments.id"), nullable=False)
+    environment_id = Column(
+        Integer, ForeignKey("environments.id"), primary_key=True, nullable=False
+    )
 
     # Delay settings
     delay_time = Column(Integer, nullable=False, default=0)  # 'ms'

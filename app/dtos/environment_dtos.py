@@ -8,7 +8,7 @@ class EnvironmentNetemDTO(BaseModel):
     loss: NetemLossDTO = Field(..., description="The Netem delay model")
     corrupt: NetemCorruptDTO = Field(..., description="The Netem corrupt model")
 
-    class Config:
+    class ConfigDict:
         from_attributes = True  # Equivalent to orm_mode
 
 
@@ -26,7 +26,7 @@ class EnvironmentDTO(BaseModel):
         ..., description="The NETEM model containing delay, loss and corrupt values"
     )
 
-    class Config:
+    class ConfigDict:
         from_attributes = True  # Equivalent to orm_mode
 
 
@@ -45,5 +45,5 @@ class EnvironmentDetailsDTO(BaseModel):
         description="A description of the satellite or bearer connection",
     )
 
-    class Config:
+    class ConfigDict:
         from_attributes = True  # Equivalent to orm_mode

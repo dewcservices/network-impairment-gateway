@@ -10,7 +10,7 @@ class BearerNetemDTO(BaseModel):
     delay: NetemDelayDTO = Field(..., description="The Netem delay model")
     loss: NetemLossDTO = Field(..., description="The Netem loss model")
 
-    class Config:
+    class ConfigDict:
         from_attributes = True  # Equivalent to orm_mode
 
 
@@ -22,7 +22,7 @@ class BearerLinkDTO(BaseModel):
         ..., description="The NETEM model containing delay, loss values"
     )
 
-    class Config:
+    class ConfigDict:
         from_attributes = True  # Equivalent to orm_mode
 
 
@@ -41,7 +41,7 @@ class BearerDTO(BaseModel):
     )
     links: Dict[str, BearerLinkDTO] = Field(..., description="Bearer Links")
 
-    class Config:
+    class ConfigDict:
         from_attributes = True  # Equivalent to orm_mode
 
 
@@ -63,5 +63,5 @@ class BearerDetailsDTO(BaseModel):
         None, description="A URL for an image representing the bearer"
     )
 
-    class Config:
+    class ConfigDict:
         from_attributes = True  # Equivalent to orm_mode

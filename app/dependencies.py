@@ -2,6 +2,7 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 
 from app.database import SessionLocal
+from app.entities.models import BearerLinkType
 from app.repositories.bearer_repository import BearerRepository
 from app.repositories.environment_repository import EnvironmentRepository
 from app.repositories.interfaces.ibearer_repository import IBearerRepository
@@ -20,9 +21,21 @@ interface = "eth0"
 uplink_qdisc_class = "1:1"
 downlink_qdisc_class = "1:2"
 
+seeded = False
+
+
+def seed_db(db: Session):
+    uplink = BearerLinkType(title="Uplink")
+    downlink = BearerLinkType(title="Downlink")
+    db.add(uplink)
+    db.add(downlink)
+    db.commit()
+
 
 def get_db():
     db = SessionLocal()
+    if not seeded:
+        seed_db(db=db)
     try:
         yield db
     finally:

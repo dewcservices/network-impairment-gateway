@@ -8,7 +8,7 @@ class NetemDelayDTO(BaseModel):
         ..., ge=0, le=100, description="The correlation percentage between 0 and 100"
     )
 
-    class Config:
+    class ConfigDict:
         from_attributes = True  # Equivalent to orm_mode
 
 
@@ -21,7 +21,7 @@ class NetemLossDTO(BaseModel):
         ..., ge=0, le=100, description="The correlation percentage between 0 and 100"
     )
 
-    class Config:
+    class ConfigDict:
         from_attributes = True  # Equivalent to orm_mode
 
 
@@ -33,5 +33,5 @@ class NetemCorruptDTO(BaseModel):
         ..., ge=0, le=100, description="The correlation percentage between 0 and 100"
     )
 
-    class Config:
+    class ConfigDict:
         from_attributes = True  # Equivalent to orm_mode
