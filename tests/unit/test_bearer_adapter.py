@@ -1,68 +1,112 @@
 import unittest
-from unittest.mock import MagicMock
+from typing import List
+
+from pydantic import HttpUrl
 
 from app.adapters.bearer_adapter import BearerAdapter
-from app.dtos.bearer_dtos import BearerDetailsDTO, BearerDTO
+from app.dtos.bearer_dtos import BearerDTO
 from app.entities.models import Bearer
 
 
 class TestBearerAdapter(unittest.TestCase):
 
     def setUp(self):
-        # Setup mock objects for Bearer, BearerDTO, and BearerDetailsDTO
-        self.mock_bearer = MagicMock(spec=Bearer)
-        self.mock_bearer_dto = MagicMock(spec=BearerDTO)
-        self.mock_bearer_details_dto = MagicMock(spec=BearerDetailsDTO)
+        self.id = 1
+        self.title = "Test Bearer"
+        self.description = "Test bearer description"
+        self.img = "http://example.com/image.png"
 
-    def test_bearer_to_bearer_dto(self):
-        # Mock the model_validate method to return a BearerDTO instance
-        BearerDTO.model_validate = MagicMock(return_value=self.mock_bearer_dto)
+    def test_BearerToBearerDetailsDTO(self):
+        # arrange
 
-        # Call the method to be tested
-        result = BearerAdapter.BearerToBearerDTO(self.mock_bearer)
+        bearer = Bearer(
+            id=self.id,
+            active=True,
+            description=self.description,
+            title=self.title,
+            img=self.img,
+        )
+        # act
+        result = BearerAdapter.BearerToBearerDetailsDTO(bearer)
+        # assert
+        assert result.id == self.id
+        assert result.title == self.title
+        assert result.img == HttpUrl(self.img)
+        assert result.description == self.description
 
-        # Assert that model_validate was called correctly
-        BearerDTO.model_validate.assert_called_once_with(self.mock_bearer)
+    def test_BearersToBearerDetailsDTOs(self):
+        # arrange
+        count = [0, 1, 2]
+        bearers: List[Bearer] = []
+        for id in count:
+            bearers.append(
+                Bearer(
+                    id=id,
+                    active=True,
+                    description=f"Test bearer {id + 1} description",
+                    title=f"Test Bear {id + 1}",
+                    img=f"http://example.com/{id + 1}.png",
+                )
+            )
+        # act
+        result = BearerAdapter.BearersToBearerDetailsDTOs(bearers=bearers)
+        # assert
+        for id in count:
+            assert result[id].id == bearers[id].id
+            assert result[id].title == bearers[id].title
+            assert result[id].description == bearers[id].description
+            assert result[id].img == HttpUrl(bearers[id].img)
 
-        # Assert that the result is the mock BearerDTO
-        self.assertEqual(result, self.mock_bearer_dto)
+    def test_BearerDTOToBearer(self):
+        # arrange
 
-    def test_bearer_to_bearer_details_dto(self):
-        # Mock the model_validate method to return a BearerDetailsDTO instance
-        BearerDetailsDTO.model_validate = MagicMock(
-            return_value=self.mock_bearer_details_dto
+        dto = BearerDTO(
+            title=self.title,
+            description=self.description,
+            img=HttpUrl(self.img),
+            links={
+                "uplink": {
+                    "hbt": {
+                        "rate": {"value": 1000, "unit": "mbit"},
+                        "ceil": {"value": 1200, "unit": "mbit"},
+                    },
+                    "netem": {
+                        "delay": {"time": 50, "jitter": 10, "correlation": 80},
+                        "loss": {"percentage": 1, "interval": 1000, "correlation": 50},
+                    },
+                },
+                "downlink": {
+                    "hbt": {
+                        "rate": {"value": 800, "unit": "mbit"},
+                        "ceil": {"value": 1000, "unit": "mbit"},
+                    },
+                    "netem": {
+                        "delay": {"time": 70, "jitter": 15, "correlation": 60},
+                        "loss": {"percentage": 2, "interval": 2000, "correlation": 40},
+                    },
+                },
+            },
+        )
+        # act
+        result = BearerAdapter.BearerDTOToBearer(dto)
+        # assert
+        assert result.title == self.title
+        assert result.img == self.img
+        assert result.description == self.description
+
+    def test_BearerToBearerDTO(self):
+        # arrange
+        bearer = Bearer(
+            id=self.id,
+            active=True,
+            description=self.description,
+            title=self.title,
+            img=self.img,
         )
 
-        # Call the method to be tested
-        result = BearerAdapter.BearerToBearerDetailsDTO(self.mock_bearer)
-
-        # Assert that model_validate was called correctly
-        BearerDetailsDTO.model_validate.assert_called_once_with(self.mock_bearer)
-
-        # Assert that the result is the mock BearerDetailsDTO
-        self.assertEqual(result, self.mock_bearer_details_dto)
-
-    def test_bearer_dto_to_bearer(self):
-        # Mock the model_dump method to return a dictionary representation of BearerDTO
-        self.mock_bearer_dto.model_dump = MagicMock(
-            return_value={
-                "id": 1,
-                "name": "Test Bearer",
-                "img": "http://example.com/image.png",
-            }
-        )
-
-        # Call the method to be tested
-        result = BearerAdapter.BearerDTOToBearer(self.mock_bearer_dto)
-
-        # Assert that model_dump was called
-        self.mock_bearer_dto.model_dump.assert_called_once()
-
-        # Check if the img was converted to string and passed correctly
-        self.assertEqual(result.img, "http://example.com/image.png")
-        self.assertEqual(result.name, "Test Bearer")
-        self.assertEqual(result.id, 1)
-
-
-if __name__ == "__main__":
-    unittest.main()
+        # act
+        result = BearerAdapter.BearerToBearerDTO(bearer=bearer)
+        # assert
+        assert result.title == self.title
+        assert result.img == HttpUrl(self.img)
+        assert result.description == self.description

@@ -14,9 +14,7 @@ class SystemStateService(ISystemStateService):
         return SystemStateAdapter.SystemStateToDTO(self.repo.get())
 
     def set_impairment(self, payload: SystemStateDTO) -> ResponseDTO:
-        self.repo.set(
-            bearer_id=payload.bearer_id, environment_id=payload.environment_id
-        )
+        self.repo.set(bearer_id=payload.bearer_id, env_id=payload.environment_id)
         return ResponseDTO(msg="Impairment set called", isError=False)
 
     def delete_htb_netem_qdiscs(self) -> ResponseDTO:
