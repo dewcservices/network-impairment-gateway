@@ -33,9 +33,11 @@ def seed_db(db: Session):
 
 
 def get_db():
+    global seeded
     db = SessionLocal()
     if not seeded:
         seed_db(db=db)
+        seeded = True
     try:
         yield db
     finally:
