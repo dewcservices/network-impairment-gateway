@@ -14,9 +14,7 @@ router = APIRouter(prefix="/api/bearers")
 def get_all(
     service: IBearerService = Depends(get_bearer_service),
 ) -> List[BearerDetailsDTO]:
-    temp = service.get_all()
-    print(temp)
-    return temp
+    return service.get_all()
 
 
 @router.get("/{bearer_id}")
