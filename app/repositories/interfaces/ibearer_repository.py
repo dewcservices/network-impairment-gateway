@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional
 
-from app.entities.models import Bearer
+from app.entities.models import Bearer, BearerLink
 
 
 class IBearerRepository(ABC):
@@ -32,20 +32,20 @@ class IBearerRepository(ABC):
     def create(self, title: str, description: str, img: Optional[str] = None) -> Bearer:
         pass
 
-    # @abstractmethod
-    # def create_bearer_link(
-    #     self,
-    #     id: int,
-    #     link_type_id: int,
-    #     hbt_rate: str,
-    #     hbt_ceil: str,
-    #     netem_delay_time: int,
-    #     netem_delay_jitter: int,
-    #     netem_loss_percentage: int,
-    #     netem_loss_interval: int,
-    #     netem_loss_correlation: int,
-    # ) -> BearerLink:
-    #     pass
+    @abstractmethod
+    def create_bearer_link(
+        self,
+        id: int,
+        link_type_id: int,
+        hbt_rate: str,
+        hbt_ceil: str,
+        netem_delay_time: int,
+        netem_delay_jitter: int,
+        netem_loss_percentage: int,
+        netem_loss_interval: int,
+        netem_loss_correlation: int,
+    ) -> BearerLink:
+        pass
 
     # @abstractmethod
     # def update_bearer_link(

@@ -3,7 +3,9 @@ from typing import List
 from fastapi import HTTPException
 
 from app.adapters.bearer_adapter import BearerAdapter
-from app.dtos.bearer_dtos import BearerDetailsDTO, BearerDTO
+from app.adapters.hbt_adapter import HBTAdapter
+from app.constants import LinkTypes
+from app.dtos.bearer_dtos import BearerDetailsDTO, BearerDTO, BearerLinkDTO
 from app.dtos.response_dtos import ResponseDTO
 from app.repositories.interfaces.ibearer_repository import IBearerRepository
 from app.services.interfaces.ibearer_service import IBearerService
@@ -34,17 +36,36 @@ class BearerService(IBearerService):
             raise HTTPException(
                 status_code=404, detail=f"Failed to create Bearer {dto.title}"
             )
-        # TODO: need to iterate through the dictionary of links
-        # TODO: should we just have the dto require up and downlink settings?
-        # for link in dto.links:
-        #     self.repo.create_bearer_link(
-        #         id=bearer.id,
-        #         link_type_id=link.link_type_id,
-        #         hbt_rate=link.hbt_rate,
-        #         hbt_ceil=link.hbt_ceil,
-        #     )
-        # return bearer.id
+
+        self.create_link(
+            bearer_id=bearer.id,
+            link_type_id=LinkTypes.UPLINK.value,
+            dto=dto.links[LinkTypes.UPLINK.name],
+        )
+        self.create_link(
+            bearer_id=bearer.id,
+            link_type_id=LinkTypes.DOWNLINK.value,
+            dto=dto.links[LinkTypes.DOWNLINK.name],
+        )
         return ResponseDTO(msg="bearer created", isError=False)
+
+    def create_link(
+        self, bearer_id: int, link_type_id: int, link: BearerLinkDTO
+    ) -> bool:
+        hbt = HBTAdapter.DTOToBearerLinkHbt(dto=link.hbt)
+        netem = link.netem
+        self.repo.create_bearer_link(
+            id=bearer_id,
+            link_type_id=link_type_id,
+            hbt_ceil=hbt.ceil,
+            hbt_rate=hbt.rate,
+            netem_delay_time=netem.delay.time,
+            netem_delay_jitter=netem.delay.jitter,
+            netem_loss_correlation=netem.delay.correlation,
+            netem_loss_interval=netem.loss.interval,
+            netem_loss_percentage=netem.loss.percentage,
+        )
+        return True
 
     def update(self, bearer_id: int, dto: BearerDTO) -> ResponseDTO:
         bearer = self.repo.update(
