@@ -17,6 +17,7 @@ class TrafficControlAdapter:
         self,
         interface: str,
         class_id: str,
+        handle: str,
         delay_time: int,
         delay_jitter: int = 0,
         delay_correlation: int = 0,
@@ -26,7 +27,7 @@ class TrafficControlAdapter:
         corrupt_percentage: int = 0,
         corrupt_correlation: int = 0,
     ):
-        return f"tc qdisc add dev {interface} parent {class_id} handle 10: netem delay {delay_time}ms {delay_jitter}ms {delay_correlation}% loss {loss_percentage}% {loss_interval}ms {loss_correlation}% corrupt {corrupt_percentage}% {corrupt_correlation}%"
+        return f"tc qdisc add dev {interface} parent {class_id} handle {handle} netem delay {delay_time}ms {delay_jitter}ms {delay_correlation}% loss {loss_percentage}% {loss_interval}ms {loss_correlation}% corrupt {corrupt_percentage}% {corrupt_correlation}%"
 
     @staticmethod
     def create_filter(
@@ -49,3 +50,44 @@ class TrafficControlAdapter:
             )
 
         return f"tc filter add dev {interface} protocol ip parent 1: prio 1 u32 match ip {direction} {ip_addr} flowid {flow_id}"
+
+    @staticmethod
+    def add_percentage(bearer_percentage: int, environment_percentage: int) -> int:
+        temp = TrafficControlAdapter.add(bearer_percentage, environment_percentage)
+        if temp > 100:
+            return 100
+        elif temp < 0:
+            return 0
+
+        return temp
+
+    @staticmethod
+    def add(bearer_value: int, environment_value: int) -> int:
+        temp = bearer_value + environment_value
+        if temp > 100:
+            return 100
+        elif temp < 0:
+            return 0
+
+        return temp
+
+    @staticmethod
+    def update_hbt(self, interface: str, class_id: str, rate: str, ceil: str) -> str:
+        return f"tc class change dev {interface} parent 1: classid {class_id} htb rate {rate} ceil {ceil}"
+
+    @staticmethod
+    def update_netem(
+        self,
+        interface: str,
+        class_id: str,
+        handle: str,
+        delay_time: int,
+        delay_jitter: int = 0,
+        delay_correlation: int = 0,
+        loss_percentage: int = 0,
+        loss_interval: int = 0,
+        loss_correlation: int = 0,
+        corrupt_percentage: int = 0,
+        corrupt_correlation: int = 0,
+    ) -> str:
+        return f"tc qdisc change dev {interface} parent {class_id} handle {handle} netem delay {delay_time}ms {delay_jitter}ms {delay_correlation}% loss {loss_percentage}% {loss_interval}ms {loss_correlation}% corrupt {corrupt_percentage}% {corrupt_correlation}%"
