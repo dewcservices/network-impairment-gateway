@@ -1,8 +1,5 @@
-import asyncio
-
-import psutil
 import uvicorn
-from fastapi import FastAPI, WebSocket
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.controllers import (
@@ -10,12 +7,22 @@ from app.controllers import (
     environment_controller,
     settings_controller,
 )
+from app.exception.request_processing_exception import (
+    RequestProcessingException,
+    request_processing_exception_handler,
+)
 
 app = FastAPI()
 
 app.include_router(environment_controller.router)
 app.include_router(bearer_controller.router)
 app.include_router(settings_controller.router)
+
+
+app.add_exception_handler(
+    RequestProcessingException, request_processing_exception_handler
+)
+
 
 origins = ["http://localhost:4200"]
 
@@ -26,25 +33,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-app.websocket("/ws/network")
-
-
-async def websocket_endpoint(websocket: WebSocket):
-    await websocket.accept()
-    previous_stats = psutil.net_io_counters()
-
-    while True:
-        await asyncio.sleep(1)
-        current_stats = psutil.net_io_counters()
-        rx_per_sec = current_stats.bytes_recv - previous_stats.bytes_recv
-        tx_per_sec = current_stats.bytes_sent - previous_stats.bytes_sent
-
-        previous_stats = current_stats
-
-        data = {"rx": rx_per_sec, "tx": tx_per_sec}
-
-        await websocket.send_json(data=data)
 
 
 if __name__ == "__main__":

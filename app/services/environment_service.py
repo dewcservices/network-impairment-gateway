@@ -1,10 +1,9 @@
 from typing import List
 
-from fastapi import HTTPException
-
 from app.adapters.environment_adapter import EnvironmentAdapter
 from app.dtos.environment_dtos import EnvironmentDTO
 from app.dtos.response_dtos import ResponseDTO
+from app.exception.request_processing_exception import RequestProcessingException
 from app.repositories.interfaces.ienvironment_repository import IEnvironmentRepository
 from app.services.interfaces.ienvironment_service import IEnvironmentService
 
@@ -19,7 +18,7 @@ class EnvironmentService(IEnvironmentService):
     def get(self, env_id: int) -> EnvironmentDTO:
         env = self.repo.get_by_id_eager(env_id)
         if env is None:
-            raise HTTPException(
+            raise RequestProcessingException(
                 status_code=404, detail=f"Environment id {env_id} not found"
             )
         return EnvironmentAdapter.EnvironmentToEnvironmentDTO(env)
@@ -27,25 +26,25 @@ class EnvironmentService(IEnvironmentService):
     def validateEnvironmentDtoObjects(self, dto: EnvironmentDTO):
 
         if dto.netem is None:
-            raise HTTPException(
+            raise RequestProcessingException(
                 status_code=404,
                 detail="Failed to create environment as netem settings have not been provided",
             )
 
         if dto.netem.corrupt is None:
-            raise HTTPException(
+            raise RequestProcessingException(
                 status_code=404,
                 detail="Failed to create environment as netem corruption settings have not been provided",
             )
 
         if dto.netem.delay is None:
-            raise HTTPException(
+            raise RequestProcessingException(
                 status_code=404,
                 detail="Failed to create environment as netem delay settings have not been provided",
             )
 
         if dto.netem.loss is None:
-            raise HTTPException(
+            raise RequestProcessingException(
                 status_code=404,
                 detail="Failed to create environment as netem loss settings have not been provided",
             )
@@ -67,7 +66,7 @@ class EnvironmentService(IEnvironmentService):
         )
 
         if not env:
-            raise HTTPException(
+            raise RequestProcessingException(
                 status_code=404, detail=f"Failed to create Environment {dto.title}"
             )
         return ResponseDTO(msg="environment created", isError=False)

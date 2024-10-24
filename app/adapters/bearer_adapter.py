@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import List
 
 from app.adapters.dto_to_model_util import DtoToModelUtil
 from app.adapters.hbt_adapter import HBTAdapter
@@ -12,6 +12,7 @@ from app.dtos.bearer_dtos import (
 )
 from app.dtos.hbt_dtos import HBTDTO
 from app.entities.models import Bearer, BearerLink, BearerLinkHBT, BearerLinkNetem
+from app.exception.request_processing_exception import RequestProcessingException
 
 
 class BearerAdapter:
@@ -44,6 +45,10 @@ class BearerAdapter:
 
     @staticmethod
     def BearerToBearerDTO(bearer: Bearer) -> BearerDTO:
+        if bearer is None:
+            raise RequestProcessingException(
+                status_code=400, detail="Bearer was empty while adapting to dto"
+            )
         dict_dto = DtoToModelUtil.map_object_to_dto(bearer, BearerDTO, {"links": {}})
         dto = BearerDTO.model_validate(dict_dto)
 
@@ -63,14 +68,11 @@ class BearerAdapter:
         return dto
 
     @staticmethod
-    def LinkInLinks(key: str, links: Dict[str, BearerLink]) -> BearerLink:
-        if key in links:
-            return links[key]
-
-        raise ValueError(f"Link {key} is missing from Bearer details")
-
-    @staticmethod
     def BearerLinkToBearerLinkDTO(bearer_link: BearerLink) -> BearerLinkDTO:
+        if bearer_link is None:
+            raise RequestProcessingException(
+                status_code=400, detail="Bearer link was empty while adapting to dto"
+            )
         netem = BearerAdapter.BearerNetemToBearerNetemDTO(bearer_link.bearer_link_netem)
         hbt = BearerAdapter.BearerNetemToBearerHtbDTO(bearer_link.bearer_link_hbt)
         # nest to a full bearer link with all children
@@ -80,6 +82,11 @@ class BearerAdapter:
     def BearerNetemToBearerNetemDTO(
         bearer_link_netem: BearerLinkNetem,
     ) -> BearerNetemDTO:
+        if bearer_link_netem is None:
+            raise RequestProcessingException(
+                status_code=400,
+                detail="Bearer link network emulation settings was empty while adapting to dto",
+            )
         delay = NetemAdapter.DelayDTO(
             time=bearer_link_netem.delay_time,
             jitter=bearer_link_netem.delay_jitter,
@@ -94,4 +101,9 @@ class BearerAdapter:
 
     @staticmethod
     def BearerNetemToBearerHtbDTO(bearer_link_hbt: BearerLinkHBT) -> HBTDTO:
+        if bearer_link_hbt is None:
+            raise RequestProcessingException(
+                status_code=400,
+                detail="Bearer link hbt settings was empty while adapting to dto",
+            )
         return HBTAdapter.BearerLinkHbtToDTO(bearer_link_hbt)

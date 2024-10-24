@@ -2,6 +2,7 @@ import re
 
 from app.dtos.hbt_dtos import HBTDTO, HBTValueDTO
 from app.entities.models import BearerLinkHBT
+from app.exception.request_processing_exception import RequestProcessingException
 
 
 class HBTAdapter:
@@ -25,7 +26,9 @@ class HBTAdapter:
         match = re.match(r"(\d+)(kbit|mbit|gbit)", input)
 
         if not match:
-            raise ValueError(f"Invalid format for rate string: {input}")
+            raise RequestProcessingException(
+                status_code=400, detail=f"Invalid format for rate string: {input}"
+            )
 
         # Extract value and unit from the regex match
         value = int(match.group(1))

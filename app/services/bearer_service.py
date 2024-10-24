@@ -1,12 +1,11 @@
 from typing import List
 
-from fastapi import HTTPException
-
 from app.adapters.bearer_adapter import BearerAdapter
 from app.adapters.hbt_adapter import HBTAdapter
 from app.constants import LinkTypes
 from app.dtos.bearer_dtos import BearerDetailsDTO, BearerDTO, BearerLinkDTO
 from app.dtos.response_dtos import ResponseDTO
+from app.exception.request_processing_exception import RequestProcessingException
 from app.repositories.interfaces.ibearer_repository import IBearerRepository
 from app.services.interfaces.ibearer_service import IBearerService
 
@@ -22,7 +21,7 @@ class BearerService(IBearerService):
     def get(self, bearer_id: int) -> BearerDTO:
         bearer = self.repo.get_by_id_eager(bearer_id)
         if bearer is None:
-            raise HTTPException(
+            raise RequestProcessingException(
                 status_code=404, detail=f"Bearer id {bearer_id} not found"
             )
         return BearerAdapter.BearerToBearerDTO(bearer)
@@ -33,19 +32,19 @@ class BearerService(IBearerService):
         )
 
         if not bearer:
-            raise HTTPException(
+            raise RequestProcessingException(
                 status_code=404, detail=f"Failed to create Bearer {dto.title}"
             )
 
         self.create_link(
             bearer_id=bearer.id,
             link_type_id=LinkTypes.UPLINK.value,
-            dto=dto.links[LinkTypes.UPLINK.name],
+            link=dto.links[LinkTypes.UPLINK.name],
         )
         self.create_link(
             bearer_id=bearer.id,
             link_type_id=LinkTypes.DOWNLINK.value,
-            dto=dto.links[LinkTypes.DOWNLINK.name],
+            link=dto.links[LinkTypes.DOWNLINK.name],
         )
         return ResponseDTO(msg="bearer created", isError=False)
 
@@ -72,7 +71,7 @@ class BearerService(IBearerService):
             id=bearer_id, title=dto.title, description=dto.description, img=dto.img
         )
         if not bearer:
-            raise HTTPException(
+            raise RequestProcessingException(
                 status_code=404, detail=f"Bearer id {bearer_id} not found"
             )
         # TODO: implement Bearer Netem and HBT Update approach in repo and this service
@@ -90,7 +89,7 @@ class BearerService(IBearerService):
         result = self.repo.delete(bearer_id)
 
         if not result:
-            raise HTTPException(
+            raise RequestProcessingException(
                 status_code=404, detail=f"Bearer id {bearer_id} not found"
             )
 
