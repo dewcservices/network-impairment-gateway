@@ -72,5 +72,19 @@ def get_env_service(
 
 def get_setting_service(
     repo: ISystemStateRepository = Depends(get_system_state_repository),
+    bearer_repo: IBearerRepository = Depends(get_bearer_repository),
+    env_repo: IEnvironmentRepository = Depends(get_env_repository),
 ) -> ISystemStateService:
-    return SystemStateService(repo)
+    global ip_address
+    global interface
+    global uplink_qdisc_class
+    global downlink_qdisc_class
+    return SystemStateService(
+        repo=repo,
+        bearer_repo=bearer_repo,
+        env_repo=env_repo,
+        interface=interface,
+        ip_address=ip_address,
+        uplink_qdisc_class=uplink_qdisc_class,
+        downlink_qdisc_class=downlink_qdisc_class,
+    )
