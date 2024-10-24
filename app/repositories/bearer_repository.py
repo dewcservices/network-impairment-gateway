@@ -90,6 +90,13 @@ class BearerRepository(IBearerRepository):
 
         self.db_session.add(new_link)
         self.db_session.commit()
+        new_hbt.bearer_link_id = new_link.id
+        new_netem.bearer_link_id = new_link.id
+
+        self.db_session.add(new_hbt)
+        self.db_session.add(new_netem)
+        self.db_session.commit()
+
         return new_link
 
     # Update bearer link, HBT, and Netem configuration
