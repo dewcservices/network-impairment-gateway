@@ -28,11 +28,11 @@ class BearerLinkDTO(BaseModel):
 
 class BearerDTO(BaseModel):
     title: str = Field(
-        ..., min_length=5, max_length=100, description="Title of the bearer"
+        ..., min_length=2, max_length=100, description="Title of the bearer"
     )
     description: str = Field(
         ...,
-        min_length=10,
+        min_length=5,
         max_length=500,
         description="A description of the satellite or bearer connection",
     )
@@ -51,11 +51,11 @@ class BearerDetailsDTO(BaseModel):
         description="Environment primary key",
     )
     title: str = Field(
-        ..., min_length=5, max_length=100, description="Title of the bearer"
+        ..., min_length=2, max_length=100, description="Title of the bearer"
     )
     description: str = Field(
         ...,
-        min_length=10,
+        min_length=5,
         max_length=500,
         description="A description of the satellite or bearer connection",
     )
