@@ -13,7 +13,8 @@ class EnvironmentService(IEnvironmentService):
         self.repo = repo
 
     def get_all(self) -> List[EnvironmentDTO]:
-        return EnvironmentAdapter.EnvironmentsToEnvironmentDetailsDTOs(self.get_all())
+        list = self.repo.get_all()
+        return EnvironmentAdapter.EnvironmentsToEnvironmentDetailsDTOs(list)
 
     def get(self, env_id: int) -> EnvironmentDTO:
         env = self.repo.get_by_id_eager(env_id)
@@ -27,25 +28,25 @@ class EnvironmentService(IEnvironmentService):
 
         if dto.netem is None:
             raise RequestProcessingException(
-                status_code=404,
+                status_code=400,
                 detail="Failed to create environment as netem settings have not been provided",
             )
 
         if dto.netem.corrupt is None:
             raise RequestProcessingException(
-                status_code=404,
+                status_code=400,
                 detail="Failed to create environment as netem corruption settings have not been provided",
             )
 
         if dto.netem.delay is None:
             raise RequestProcessingException(
-                status_code=404,
+                status_code=400,
                 detail="Failed to create environment as netem delay settings have not been provided",
             )
 
         if dto.netem.loss is None:
             raise RequestProcessingException(
-                status_code=404,
+                status_code=400,
                 detail="Failed to create environment as netem loss settings have not been provided",
             )
 
@@ -56,10 +57,11 @@ class EnvironmentService(IEnvironmentService):
         env = self.repo.create(
             title=dto.title,
             description=dto.description,
+            netem_delay_time=dto.netem.delay.time,
+            netem_delay_jitter=dto.netem.delay.jitter,
+            netem_delay_correlation=dto.netem.delay.correlation,
             netem_corrupt_correlation=dto.netem.corrupt.correlation,
             netem_corrupt_percentage=dto.netem.corrupt.percentage,
-            netem_delay_jitter=dto.netem.delay.jitter,
-            netem_delay_time=dto.netem.delay.time,
             netem_loss_correlation=dto.netem.loss.correlation,
             netem_loss_interval=dto.netem.loss.interval,
             netem_loss_percentage=dto.netem.loss.percentage,

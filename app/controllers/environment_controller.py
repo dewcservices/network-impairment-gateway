@@ -3,7 +3,7 @@ from typing import List
 from fastapi import APIRouter, Depends
 
 from app.dependencies import get_env_service
-from app.dtos.environment_dtos import EnvironmentDTO
+from app.dtos.environment_dtos import EnvironmentDetailsDTO, EnvironmentDTO
 from app.dtos.response_dtos import ResponseDTO
 from app.services.interfaces.ienvironment_service import IEnvironmentService
 
@@ -13,10 +13,8 @@ router = APIRouter(prefix="/api/environments")
 @router.get("/")
 def get_all(
     service: IEnvironmentService = Depends(get_env_service),
-) -> List[EnvironmentDTO]:
-    temp = service.get_all()
-    print(temp)
-    return temp
+) -> List[EnvironmentDetailsDTO]:
+    return service.get_all()
 
 
 @router.get("/{env_id}")

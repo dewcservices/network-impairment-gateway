@@ -50,7 +50,7 @@ class EnvironmentRepository(IEnvironmentRepository):
         description: str,
         netem_delay_time: int,
         netem_delay_jitter: int,
-        delay_correlation: int,
+        netem_delay_correlation: int,
         netem_loss_percentage: int,
         netem_loss_interval: int,
         netem_loss_correlation: int,
@@ -60,16 +60,19 @@ class EnvironmentRepository(IEnvironmentRepository):
         new_environment = Environment(title=title, description=description)
         new_netem = EnvironmentNetem(
             delay_time=netem_delay_time,
-            netem_delay_jitter=netem_delay_jitter,
-            delay_correlation=delay_correlation,
-            netem_loss_percentage=netem_loss_percentage,
-            netem_loss_interval=netem_loss_interval,
-            netem_loss_correlation=netem_loss_correlation,
-            netem_corrupt_percentage=netem_corrupt_percentage,
-            netem_corrupt_correlation=netem_corrupt_correlation,
+            delay_jitter=netem_delay_jitter,
+            delay_correlation=netem_delay_correlation,
+            loss_percentage=netem_loss_percentage,
+            loss_interval=netem_loss_interval,
+            loss_correlation=netem_loss_correlation,
+            corrupt_percentage=netem_corrupt_percentage,
+            corrupt_correlation=netem_corrupt_correlation,
         )
-        new_environment.environment_netem = new_netem
+
         self.db_session.add(new_environment)
+        self.db_session.commit()
+        new_netem.environment_id = new_environment.id
+        self.db_session.add(new_netem)
         self.db_session.commit()
         return new_environment
 
