@@ -14,5 +14,5 @@ iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 # Impair all traffic passing through as eth0 is passing to eth1
 tc qdisc add dev eth0 root netem delay 100ms loss 10%
 
-# Keep the container running
-tail -f /dev/null
+# Start fastapi app with uvicorn
+exec uvicorn app.main:app --host 0.0.0.0 --port 8000

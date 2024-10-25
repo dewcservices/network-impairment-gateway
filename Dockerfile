@@ -21,6 +21,4 @@ RUN pip3 install --no-cache-dir -r /app/requirements.txt
 EXPOSE 8000
 
 # Set the entrypoint to the script
-# ENTRYPOINT ["docker-entrypoint.sh"]
-# Add the command to run the FastAPI application using Uvicorn
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+ENTRYPOINT ["docker-entrypoint.sh"]
