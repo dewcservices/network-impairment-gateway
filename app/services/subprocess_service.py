@@ -8,6 +8,7 @@ class SubprocessService(IProcessService):
 
     def run(self, cmd):
         result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+        print(cmd)
         # Check if the command was successful
         if result.returncode != 0:
             raise RequestProcessingException(

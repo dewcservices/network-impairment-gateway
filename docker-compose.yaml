@@ -43,7 +43,7 @@ services:
       DOWNLINK_DIRECTION: "src"
       UPLINK_NETEM_HANDLE: "10:"
       DOWNLINK_NETEM_HANDLE: "20:"
-      MOCK_PROCESS_CALLS: "True"
+      MOCK_PROCESS_CALLS: "FALSE"
       DATABASE_SEEDED: "FALSE"
     depends_on:
       - container_a
