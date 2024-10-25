@@ -4,3 +4,5 @@ sqlalchemy
 ruff 
 black
 pre-commit
+pytest
+psutil

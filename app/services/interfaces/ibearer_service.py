@@ -1,23 +1,27 @@
 from abc import ABC, abstractmethod
+from typing import List
+
+from app.dtos.bearer_dtos import BearerDetailsDTO, BearerDTO
+from app.dtos.response_dtos import ResponseDTO
 
 
 class IBearerService(ABC):
     @abstractmethod
-    async def get_all():
+    def get_all(self) -> List[BearerDetailsDTO]:
         pass
 
     @abstractmethod
-    async def get(bearer_id: int) -> str:
+    def get(self, earer_id: int) -> BearerDTO:
         pass
 
     @abstractmethod
-    async def create() -> str:
+    def create(self, dto: BearerDTO) -> ResponseDTO:
         pass
 
     @abstractmethod
-    async def update(bearer_id: int) -> str:
+    def update(self, bearer_id: int, dto: BearerDTO) -> ResponseDTO:
         pass
 
     @abstractmethod
-    async def delete(bearer_id: int) -> str:
+    def delete(self, bearer_id: int) -> ResponseDTO:
         pass

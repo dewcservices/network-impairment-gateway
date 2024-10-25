@@ -1,33 +1,27 @@
 from fastapi import APIRouter, Depends
 
 from app.dependencies import get_setting_service
-from app.services.interfaces.isetting_service import ISettingService
+from app.dtos.response_dtos import ResponseDTO
+from app.dtos.system_dtos import SystemStateDTO
+from app.services.interfaces.isystem_state_service import ISystemStateService
 
 router = APIRouter(prefix="/api/settings")
 
 
+@router.get("/")
+def get(service: ISystemStateService = Depends(get_setting_service)) -> SystemStateDTO:
+    return service.get()
+
+
 @router.post("/")
-async def create_htb_netem_qdiscs(
-    payload, service: ISettingService = Depends(get_setting_service)
-):
-
-    return await service.create_htb_netem_qdiscs(payload)
-
-
-@router.put("/bandwidth")
-async def update_htb(payload, service: ISettingService = Depends(get_setting_service)):
-    return await service.update_htb(payload)
-
-
-@router.put("/netem")
-async def update_netem(
-    payload, service: ISettingService = Depends(get_setting_service)
-):
-    return await service.update_netem(payload)
+def set_impairment(
+    payload: SystemStateDTO, service: ISystemStateService = Depends(get_setting_service)
+) -> ResponseDTO:
+    return service.set_impairment(payload)
 
 
 @router.delete("/")
-async def delete_htb_netem_qdiscs(
-    service: ISettingService = Depends(get_setting_service),
-):
-    return await service.delete_htb_netem_qdiscs()
+def delete_htb_netem_qdiscs(
+    service: ISystemStateService = Depends(get_setting_service),
+) -> ResponseDTO:
+    return service.delete_htb_netem_qdiscs()

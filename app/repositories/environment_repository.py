@@ -1,44 +1,85 @@
-from typing import List
+from typing import List, Optional
 
-from fastapi import HTTPException
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
+from app.entities.models import Environment, EnvironmentNetem
 from app.repositories.interfaces.ienvironment_repository import IEnvironmentRepository
 
 
 class EnvironmentRepository(IEnvironmentRepository):
-    def __init__(self, db: Session):
-        self.db = db
+    def __init__(self, db_session: Session):
+        self.db_session = db_session
 
-    async def create(self, env: any) -> any:
-        # db_recipe = _model.Recipe(title=recipe.title, description=recipe.description, ingredients=recipe.ingredients, method=recipe.method, favourite=recipe.favourite)
-        # self.db.add(db_recipe)
-        # self.db.commit()
-        # self.db.refresh(db_recipe)
-        return {}
+    def get_all(self) -> List[Environment]:
+        return self.db_session.query(Environment).all()
 
-    async def get_all(self) -> List[any]:
-        env: any = {}
-        return self.db.query(env).all()
+    def get_by_id(self, id: int) -> Optional[Environment]:
+        return self.db_session.query(Environment).filter(Environment.id == id).first()
 
-    async def get(self, id: int) -> any:
-        env: any = {}
-        db_env = self.db.query(env.Recipe).filter(env.id == id).first()
+    # Get bearer by id, eager loading links, hbt, and netem relationships
+    def get_by_id_eager(self, id: int) -> Optional[Environment]:
+        return (
+            self.db_session.query(Environment)
+            .options(joinedload(Environment.environment_netem))
+            .filter(Environment.id == id)
+            .first()
+        )
 
-        if db_env is None:
-            raise HTTPException(
-                status_code=404, detail="sorry this recipe does not exist"
-            )
-        return db_env
+    # Update an existing bearer
+    def update(
+        self,
+        id: int,
+        title: Optional[str] = None,
+        description: Optional[str] = None,
+    ) -> Optional[Environment]:
+        environment = self.get_by_id(id)
+        if not environment:
+            return None
 
-    async def update(self, env: any, id: int) -> any:
-        db_env = await self.get(id)
-        # update
-        self.db.commit()
-        self.db.refresh(db_env)
-        return db_env
+        if title:
+            environment.title = title
+        if description:
+            environment.description = description
 
-    async def delete(self, id: int):
-        env: any = {}
-        self.db.query(env).filter(env.id == id).delete()
-        self.db.commit()
+        self.db_session.commit()
+        return environment
+
+    def create(
+        self,
+        title: str,
+        description: str,
+        netem_delay_time: int,
+        netem_delay_jitter: int,
+        netem_delay_correlation: int,
+        netem_loss_percentage: float,
+        netem_loss_interval: int,
+        netem_loss_correlation: int,
+        netem_corrupt_percentage: float,
+        netem_corrupt_correlation: int,
+    ) -> Environment:
+        new_environment = Environment(title=title, description=description)
+        new_netem = EnvironmentNetem(
+            delay_time=netem_delay_time,
+            delay_jitter=netem_delay_jitter,
+            delay_correlation=netem_delay_correlation,
+            loss_percentage=netem_loss_percentage,
+            loss_interval=netem_loss_interval,
+            loss_correlation=netem_loss_correlation,
+            corrupt_percentage=netem_corrupt_percentage,
+            corrupt_correlation=netem_corrupt_correlation,
+        )
+
+        self.db_session.add(new_environment)
+        self.db_session.commit()
+        new_netem.environment_id = new_environment.id
+        self.db_session.add(new_netem)
+        self.db_session.commit()
+        return new_environment
+
+    def delete(self, id: int):
+        environment = self.get_by_id(id)
+        if not environment:
+            return None
+
+        environment.active = False
+        self.db_session.commit()
