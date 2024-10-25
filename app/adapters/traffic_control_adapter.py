@@ -26,7 +26,7 @@ class TrafficControlAdapter:
         corrupt_percentage: int = 0,
         corrupt_correlation: int = 0,
     ):
-        return f"tc qdisc add dev {interface} parent {class_id} handle {handle} netem delay {delay_time}ms {delay_jitter}ms {delay_correlation}% loss {loss_percentage}% {loss_interval}ms {loss_correlation}% corrupt {corrupt_percentage}% {corrupt_correlation}%"
+        return f"tc qdisc add dev {interface} parent {class_id} handle {handle} netem delay {delay_time}ms {delay_jitter}ms {delay_correlation}% loss {loss_percentage}% {loss_correlation}% corrupt {corrupt_percentage}% {corrupt_correlation}%"
 
     @staticmethod
     def create_filter(
@@ -87,4 +87,4 @@ class TrafficControlAdapter:
         corrupt_percentage: int = 0,
         corrupt_correlation: int = 0,
     ) -> str:
-        return f"tc qdisc change dev {interface} parent {class_id} handle {handle} netem delay {delay_time}ms {delay_jitter}ms {delay_correlation}% loss {loss_percentage}% {loss_interval}ms {loss_correlation}% corrupt {corrupt_percentage}% {corrupt_correlation}%"
+        return f"tc qdisc change dev {interface} parent {class_id} handle {handle} netem delay {delay_time}ms {delay_jitter}ms {delay_correlation}% loss {loss_percentage}% {loss_correlation}% corrupt {corrupt_percentage}% {corrupt_correlation}%"
