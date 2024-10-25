@@ -15,7 +15,7 @@ class TestBearerAdapter(unittest.TestCase):
         self.id = 1
         self.title = "Test Bearer"
         self.description = "Test bearer description"
-        self.img = "http://example.com/image.png"
+        self.img = "https://example.com/image.png"
         self.delay = NetemAdapter.DelayDTO(
             time=10,
             jitter=5,
@@ -56,7 +56,7 @@ class TestBearerAdapter(unittest.TestCase):
                     active=True,
                     description=f"Test bearer {id + 1} description",
                     title=f"Test Bear {id + 1}",
-                    img=f"http://example.com/{id + 1}.png",
+                    img=f"https://example.com/{id + 1}.png",
                 )
             )
         # act
