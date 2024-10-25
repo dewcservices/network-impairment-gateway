@@ -1,3 +1,5 @@
+import os
+
 from fastapi import Depends
 from sqlalchemy.orm import Session
 
@@ -19,18 +21,17 @@ from app.services.interfaces.isystem_state_service import ISystemStateService
 from app.services.subprocess_service import SubprocessService
 from app.services.system_state_service import SystemStateService
 
-# TODO - move to environment variables
-ip_address = "172.18.0.1"
-interface = "eth0"
-uplink_qdisc_class = "1:1"
-downlink_qdisc_class = "1:2"
-uplink_direction = "dst"
-downlink_direction = "src"
-uplink_netem_handle = "10:"
-downlink_netem_handle = "20:"
-mock_process_calls = True
-
-seeded = False
+# Load values from environment variables with defaults
+ip_address = os.getenv("IP_ADDRESS", "172.18.0.1")
+interface = os.getenv("INTERFACE", "eth0")
+uplink_qdisc_class = os.getenv("UPLINK_QDISC_CLASS", "1:1")
+downlink_qdisc_class = os.getenv("DOWNLINK_QDISC_CLASS", "1:2")
+uplink_direction = os.getenv("UPLINK_DIRECTION", "dst")
+downlink_direction = os.getenv("DOWNLINK_DIRECTION", "src")
+uplink_netem_handle = os.getenv("UPLINK_NETEM_HANDLE", "10:")
+downlink_netem_handle = os.getenv("DOWNLINK_NETEM_HANDLE", "20:")
+mock_process_calls = os.getenv("MOCK_PROCESS_CALLS", "True").lower() == "true"
+seeded = os.getenv("SEED_DATABASE", "FALSE").lower() == "true"
 
 
 def get_db():
