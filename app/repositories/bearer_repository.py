@@ -70,7 +70,7 @@ class BearerRepository(IBearerRepository):
         hbt_ceil: str,
         netem_delay_time: int,
         netem_delay_jitter: int,
-        netem_loss_percentage: int,
+        netem_loss_percentage: float,
         netem_loss_interval: int,
         netem_loss_correlation: int,
     ) -> BearerLink:
@@ -107,7 +107,7 @@ class BearerRepository(IBearerRepository):
         hbt_ceil: Optional[str] = None,
         netem_delay_time: Optional[int] = None,
         netem_delay_jitter: Optional[int] = None,
-        netem_loss_percentage: Optional[int] = None,
+        netem_loss_percentage: Optional[float] = None,
         netem_loss_interval: Optional[int] = None,
         netem_loss_correlation: Optional[int] = None,
     ) -> Optional[BearerLink]:

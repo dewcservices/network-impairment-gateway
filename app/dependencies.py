@@ -83,6 +83,7 @@ def get_setting_service(
     repo: ISystemStateRepository = Depends(get_system_state_repository),
     bearer_repo: IBearerRepository = Depends(get_bearer_repository),
     env_repo: IEnvironmentRepository = Depends(get_env_repository),
+    process_svc: IEnvironmentRepository = Depends(get_process_service),
 ) -> ISystemStateService:
     global ip_address
     global interface
@@ -96,6 +97,7 @@ def get_setting_service(
         repo=repo,
         bearer_repo=bearer_repo,
         env_repo=env_repo,
+        process_svc=process_svc,
         interface=interface,
         ip_address=ip_address,
         uplink_qdisc_class=uplink_qdisc_class,

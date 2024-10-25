@@ -51,10 +51,10 @@ class EnvironmentRepository(IEnvironmentRepository):
         netem_delay_time: int,
         netem_delay_jitter: int,
         netem_delay_correlation: int,
-        netem_loss_percentage: int,
+        netem_loss_percentage: float,
         netem_loss_interval: int,
         netem_loss_correlation: int,
-        netem_corrupt_percentage: int,
+        netem_corrupt_percentage: float,
         netem_corrupt_correlation: int,
     ) -> Environment:
         new_environment = Environment(title=title, description=description)

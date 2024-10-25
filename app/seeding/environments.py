@@ -26,10 +26,10 @@ def seed_clean_env(repo: IEnvironmentRepository):
         netem_delay_time=0,  # 0 ms delay
         netem_delay_jitter=0,  # 0 ms jitter
         netem_delay_correlation=0,  # 0% correlation
-        netem_loss_percentage=0,  # 0% packet loss
+        netem_loss_percentage=0.0,  # 0% packet loss
         netem_loss_interval=0,  # 0 ms loss interval
         netem_loss_correlation=0,  # 0% loss correlation
-        netem_corrupt_percentage=0,  # 0% corruption
+        netem_corrupt_percentage=0.0,  # 0% corruption
         netem_corrupt_correlation=0,  # 0% corruption correlation
     )
 
@@ -54,10 +54,10 @@ def seed_disconnected_env(repo: IEnvironmentRepository):
         netem_delay_time=3000,  # 3000 ms delay
         netem_delay_jitter=700,  # 700 ms jitter
         netem_delay_correlation=90,  # 90% correlation
-        netem_loss_percentage=70,  # 70% packet loss
+        netem_loss_percentage=70.0,  # 70% packet loss
         netem_loss_interval=50,  # 50 ms loss interval
         netem_loss_correlation=95,  # 95% loss correlation
-        netem_corrupt_percentage=10,  # 10% packet corruption
+        netem_corrupt_percentage=10.0,  # 10% packet corruption
         netem_corrupt_correlation=20,  # 20% corruption correlation
     )
 
@@ -82,10 +82,10 @@ def seed_disrupted_env(repo: IEnvironmentRepository):
         netem_delay_time=1500,  # 1500 ms delay
         netem_delay_jitter=400,  # 400 ms jitter
         netem_delay_correlation=70,  # 70% correlation
-        netem_loss_percentage=40,  # 40% packet loss
+        netem_loss_percentage=40.0,  # 40% packet loss
         netem_loss_interval=100,  # 100 ms loss interval
         netem_loss_correlation=60,  # 60% loss correlation
-        netem_corrupt_percentage=5,  # 5% corruption
+        netem_corrupt_percentage=5.0,  # 5% corruption
         netem_corrupt_correlation=15,  # 15% corruption correlation
     )
 
@@ -109,10 +109,10 @@ def seed_intermittent_env(repo: IEnvironmentRepository):
         netem_delay_time=800,  # 800 ms delay
         netem_delay_jitter=200,  # 200 ms jitter
         netem_delay_correlation=50,  # 50% correlation
-        netem_loss_percentage=20,  # 20% packet loss
+        netem_loss_percentage=20.0,  # 20% packet loss
         netem_loss_interval=200,  # 200 ms loss interval
         netem_loss_correlation=40,  # 40% loss correlation
-        netem_corrupt_percentage=2,  # 2% corruption
+        netem_corrupt_percentage=2.0,  # 2% corruption
         netem_corrupt_correlation=5,  # 5% corruption correlation
     )
 
@@ -136,7 +136,7 @@ def seed_limited_env(repo: IEnvironmentRepository):
         netem_delay_time=300,  # 300 ms delay
         netem_delay_jitter=50,  # 50 ms jitter
         netem_delay_correlation=30,  # 30% correlation
-        netem_loss_percentage=5,  # 5% packet loss
+        netem_loss_percentage=5.0,  # 5% packet loss
         netem_loss_interval=500,  # 500 ms loss interval
         netem_loss_correlation=10,  # 10% loss correlation
         netem_corrupt_percentage=0.5,  # 0.5% corruption
@@ -161,7 +161,7 @@ def seed_congested_4g_env(repo: IEnvironmentRepository):
         netem_delay_time=300,
         netem_delay_jitter=100,
         netem_delay_correlation=15,
-        netem_loss_percentage=7,
+        netem_loss_percentage=7.0,
         netem_loss_interval=300,
         netem_loss_correlation=25,
         netem_corrupt_percentage=0.3,

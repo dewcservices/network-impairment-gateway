@@ -5,16 +5,15 @@ from app.exception.request_processing_exception import RequestProcessingExceptio
 
 class TrafficControlAdapter:
     @staticmethod
-    def create_root_qdisc(self, interface: str):
-        return f"tc qdisc add dev {self.interface} root handle 1: htb default 12"
+    def create_root_qdisc(interface: str):
+        return f"tc qdisc add dev {interface} root handle 1: htb default 12"
 
     @staticmethod
-    def create_htb_class(self, interface: str, rate: str, ceil: str, class_id: str):
+    def create_htb_class(interface: str, rate: str, ceil: str, class_id: str):
         return f"tc class add dev {interface} parent 1: classid {class_id} htb rate {rate} ceil {ceil}"
 
     @staticmethod
     def create_netem_qdisc(
-        self,
         interface: str,
         class_id: str,
         handle: str,
@@ -31,7 +30,6 @@ class TrafficControlAdapter:
 
     @staticmethod
     def create_filter(
-        self,
         interface: str,
         direction: str,
         ip_addr: str,
@@ -72,12 +70,11 @@ class TrafficControlAdapter:
         return temp
 
     @staticmethod
-    def update_hbt(self, interface: str, class_id: str, rate: str, ceil: str) -> str:
+    def update_hbt(interface: str, class_id: str, rate: str, ceil: str) -> str:
         return f"tc class change dev {interface} parent 1: classid {class_id} htb rate {rate} ceil {ceil}"
 
     @staticmethod
     def update_netem(
-        self,
         interface: str,
         class_id: str,
         handle: str,

@@ -41,7 +41,7 @@ class IBearerRepository(ABC):
         hbt_ceil: str,
         netem_delay_time: int,
         netem_delay_jitter: int,
-        netem_loss_percentage: int,
+        netem_loss_percentage: float,
         netem_loss_interval: int,
         netem_loss_correlation: int,
     ) -> BearerLink:

@@ -5,9 +5,10 @@ from app.dtos.response_dtos import ResponseDTO
 
 
 class RequestProcessingException(Exception):
-    def __init__(self, status_code: int, detail: str):
+    def __init__(self, status_code: int, detail: str, stack_trace: str = ""):
         self.status_code = status_code
         self.detail = detail
+        self.stack_trace = stack_trace
 
 
 async def request_processing_exception_handler(

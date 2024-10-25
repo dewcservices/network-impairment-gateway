@@ -59,7 +59,7 @@ def seed_commercial_maritime_bearer(bearer_repo: IBearerRepository):
         hbt_ceil="512kbit",
         netem_delay_time=750,
         netem_delay_jitter=100,
-        netem_loss_percentage=1,
+        netem_loss_percentage=1.0,
         netem_loss_interval=1000,
         netem_loss_correlation=5,
     )
@@ -71,7 +71,7 @@ def seed_commercial_maritime_bearer(bearer_repo: IBearerRepository):
         hbt_ceil="1mbit",
         netem_delay_time=750,
         netem_delay_jitter=100,
-        netem_loss_percentage=1,
+        netem_loss_percentage=1.0,
         netem_loss_interval=1000,
         netem_loss_correlation=5,
     )
@@ -168,7 +168,7 @@ def seed_fixed_internet_bearer(bearer_repo: IBearerRepository):
         hbt_ceil="100mbit",
         netem_delay_time=10,
         netem_delay_jitter=1,
-        netem_loss_percentage=0,
+        netem_loss_percentage=0.0,
         netem_loss_interval=1000,
         netem_loss_correlation=0,
     )
@@ -180,7 +180,7 @@ def seed_fixed_internet_bearer(bearer_repo: IBearerRepository):
         hbt_ceil="500mbit",
         netem_delay_time=10,
         netem_delay_jitter=1,
-        netem_loss_percentage=0,
+        netem_loss_percentage=0.0,
         netem_loss_interval=1000,
         netem_loss_correlation=0,
     )

@@ -35,10 +35,10 @@ class IEnvironmentRepository(ABC):
         netem_delay_time: int,
         netem_delay_jitter: int,
         delay_correlation: int,
-        netem_loss_percentage: int,
+        netem_loss_percentage: float,
         netem_loss_interval: int,
         netem_loss_correlation: int,
-        netem_corrupt_percentage: int,
+        netem_corrupt_percentage: float,
         netem_corrupt_correlation: int,
     ) -> Environment:
         pass

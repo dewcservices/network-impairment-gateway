@@ -51,16 +51,37 @@ class SystemStateService(ISystemStateService):
     def get(self) -> SystemStateDTO:
         return SystemStateAdapter.SystemStateToDTO(self.repo.get())
 
+    def test_tc_unset(self, state_bearer_id: int, state_environment_id: int) -> bool:
+        return state_bearer_id == -1 or state_environment_id == -1
+
+    def test_update_hbt_bandwidth(
+        self, state_bearer_id: int, payload_bearer_id: int
+    ) -> bool:
+        return state_bearer_id != payload_bearer_id
+
+    def test_update_netem(
+        self,
+        state_bearer_id: int,
+        payload_bearer_id: int,
+        state_environment_id: int,
+        payload_environment_id: int,
+    ) -> bool:
+        return (
+            state_bearer_id != payload_bearer_id
+            or state_environment_id != payload_environment_id
+        )
+
     def set_impairment(self, payload: SystemStateDTO) -> ResponseDTO:
         state = self.repo.get()
+        state_bearer_id = state.bearer_id
+        state_environment_id = state.environment_id
 
-        self.repo.set(bearer_id=payload.bearer_id, env_id=payload.environment_id)
-        # TODO - Add the service to get the setting for the bearer and environment, then produce the tc commands
         bearer = self.bearer_repo.get_by_id_eager(payload.bearer_id)
         env = self.env_repo.get_by_id_eager(payload.environment_id)
-        env_netem: EnvironmentNetem = env.environment_netem
+        # TODO - fix environment_netem db
+        env_netem: EnvironmentNetem = env.environment_netem[0]
 
-        if state.bearer_id == -1 or state.environment_id == -1:
+        if self.test_tc_unset(state_bearer_id, state_environment_id):
             # create root qdisc
             self.process_svc.call(
                 TrafficControlAdapter.create_root_qdisc(interface=self.interface)
@@ -83,7 +104,7 @@ class SystemStateService(ISystemStateService):
                 direction = self.downlink_direction
                 handle = self.downlink_netem_handle
 
-            if state.bearer_id == -1 or state.environment_id == -1:
+            if self.test_tc_unset(state_bearer_id, state_environment_id):
                 self.create_bearer_link(
                     bearer_link_hbt=bearer_link_hbt,
                     bearer_link_netem=bearer_link_netem,
@@ -92,26 +113,28 @@ class SystemStateService(ISystemStateService):
                     filter_direction=direction,
                     netem_handle=handle,
                 )
-                return ResponseDTO(msg="Impairment created", isError=False)
+                continue
 
-            if state.bearer_id != payload.bearer_id:
-                # TODO update bandwidth
+            if self.test_update_hbt_bandwidth(
+                state_bearer_id=state_bearer_id, payload_bearer_id=payload.bearer_id
+            ):
                 self.update_hbt(
                     bearer_link_hbt=bearer_link_hbt, qdisc_class=qdisc_class
                 )
 
-            if (
-                state.bearer_id != payload.bearer_id
-                or state.environment_id != payload.environment_id
+            if self.test_update_netem(
+                state_bearer_id=state_bearer_id,
+                payload_bearer_id=payload.bearer_id,
+                state_environment_id=state_environment_id,
+                payload_environment_id=payload.environment_id,
             ):
-                # TODO update netem
                 self.update_netem(
                     bearer_link_netem=bearer_link_netem,
                     env_netem=env_netem,
                     qdisc_class=qdisc_class,
                     netem_handle=handle,
                 )
-
+        self.repo.set(bearer_id=payload.bearer_id, env_id=payload.environment_id)
         return ResponseDTO(msg="Impairment updated", isError=False)
 
     def update_hbt(
@@ -201,7 +224,7 @@ class SystemStateService(ISystemStateService):
                     bearer_link_netem.loss_interval, env_netem.loss_interval
                 ),
                 loss_correlation=TrafficControlAdapter.add_percentage(
-                    bearer_link_netem.loss_correlation + env_netem.loss_correlation
+                    bearer_link_netem.loss_correlation, env_netem.loss_correlation
                 ),
                 corrupt_percentage=env_netem.corrupt_percentage,
                 corrupt_correlation=env_netem.corrupt_correlation,

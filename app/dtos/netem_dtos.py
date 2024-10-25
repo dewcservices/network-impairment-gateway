@@ -13,8 +13,8 @@ class NetemDelayDTO(BaseModel):
 
 
 class NetemLossDTO(BaseModel):
-    percentage: int = Field(
-        ..., ge=0, le=100, description="The loss percentage between 0 and 100"
+    percentage: float = Field(
+        ..., ge=0.0, le=100.0, description="The loss percentage between 0 and 100"
     )
     interval: int = Field(..., description="The loss interval in milliseconds")
     correlation: int = Field(
@@ -26,8 +26,8 @@ class NetemLossDTO(BaseModel):
 
 
 class NetemCorruptDTO(BaseModel):
-    percentage: int = Field(
-        ..., ge=0, le=100, description="The corruption percentage between 0 and 100"
+    percentage: float = Field(
+        ..., ge=0.0, le=100.0, description="The corruption percentage between 0 and 100"
     )
     correlation: int = Field(
         ..., ge=0, le=100, description="The correlation percentage between 0 and 100"

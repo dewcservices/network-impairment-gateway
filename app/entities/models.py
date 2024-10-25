@@ -2,6 +2,7 @@ from sqlalchemy import (
     Boolean,
     Column,
     DateTime,
+    Float,
     ForeignKey,
     Integer,
     String,
@@ -126,7 +127,7 @@ class BearerLinkNetem(Base):
     )  # percentage value (0-100)
 
     # Loss settings
-    loss_percentage = Column(Integer, nullable=False, default=0)  # percentage
+    loss_percentage = Column(Float, nullable=False, default=0.0)  # percentage
     loss_interval = Column(Integer, nullable=False, default=0)  # 'ms'
     loss_correlation = Column(
         Integer, nullable=False, default=0
@@ -170,13 +171,13 @@ class EnvironmentNetem(Base):
     )  # percentage value (0-100)
 
     # Loss settings
-    loss_percentage = Column(Integer, nullable=False, default=0)  # percentage
+    loss_percentage = Column(Float, nullable=False, default=0.0)  # percentage
     loss_interval = Column(Integer, nullable=False, default=0)  # 'ms'
     loss_correlation = Column(
         Integer, nullable=False, default=0
     )  # percentage value (0-100)
 
-    corrupt_percentage = Column(Integer, nullable=False, default=0)  # percentage
+    corrupt_percentage = Column(Float, nullable=False, default=0.0)  # percentage
     corrupt_correlation = Column(
         Integer, nullable=False, default=0
     )  # percentage value (0-100)
