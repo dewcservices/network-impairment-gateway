@@ -31,7 +31,7 @@ downlink_direction = os.getenv("DOWNLINK_DIRECTION", "src")
 uplink_netem_handle = os.getenv("UPLINK_NETEM_HANDLE", "10:")
 downlink_netem_handle = os.getenv("DOWNLINK_NETEM_HANDLE", "20:")
 mock_process_calls = os.getenv("MOCK_PROCESS_CALLS", "True").lower() == "true"
-seeded = os.getenv("SEED_DATABASE", "FALSE").lower() == "true"
+seeded = os.getenv("DATABASE_SEEDED", "FALSE").lower() == "true"
 
 
 def get_db():

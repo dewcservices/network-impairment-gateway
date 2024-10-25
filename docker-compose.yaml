@@ -27,11 +27,24 @@ services:
     privileged: true
     cap_add:
       - NET_ADMIN
+    ports:
+      - "8000:8000"
     networks:
       network_a:
         ipv4_address: 172.18.0.3
       network_b:
         ipv4_address: 172.19.0.3
+    environment:
+      IP_ADDRESS: "172.18.0.3"
+      INTERFACE: "eth0"
+      UPLINK_QDISC_CLASS: "1:1"
+      DOWNLINK_QDISC_CLASS: "1:2"
+      UPLINK_DIRECTION: "dst"
+      DOWNLINK_DIRECTION: "src"
+      UPLINK_NETEM_HANDLE: "10:"
+      DOWNLINK_NETEM_HANDLE: "20:"
+      MOCK_PROCESS_CALLS: "True"
+      DATABASE_SEEDED: "FALSE"
     depends_on:
       - container_a
       - container_b
