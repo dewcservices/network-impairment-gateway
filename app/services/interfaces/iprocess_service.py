@@ -3,5 +3,5 @@ from abc import ABC, abstractmethod
 
 class IProcessService(ABC):
     @abstractmethod
-    def call(self, cmd: str):
+    def run(self, cmd: str):
         pass

@@ -5,7 +5,8 @@ from app.services.interfaces.iprocess_service import IProcessService
 
 
 class SubprocessService(IProcessService):
-    def run(cmd):
+
+    def run(self, cmd):
         result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
         # Check if the command was successful
         if result.returncode != 0:

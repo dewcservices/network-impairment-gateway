@@ -72,6 +72,7 @@ class SystemStateService(ISystemStateService):
         )
 
     def set_impairment(self, payload: SystemStateDTO) -> ResponseDTO:
+        # TODO - simplify - we have create and delete. update = delete then create
         state = self.repo.get()
         state_bearer_id = state.bearer_id
         state_environment_id = state.environment_id
@@ -83,7 +84,7 @@ class SystemStateService(ISystemStateService):
 
         if self.test_tc_unset(state_bearer_id, state_environment_id):
             # create root qdisc
-            self.process_svc.call(
+            self.process_svc.run(
                 TrafficControlAdapter.create_root_qdisc(interface=self.interface)
             )
 
@@ -142,7 +143,7 @@ class SystemStateService(ISystemStateService):
         bearer_link_hbt: BearerLinkHBT,
         qdisc_class: str,
     ):
-        self.process_svc.call(
+        self.process_svc.run(
             TrafficControlAdapter.update_hbt(
                 interface=self.interface,
                 class_id=qdisc_class,
@@ -158,7 +159,7 @@ class SystemStateService(ISystemStateService):
         qdisc_class: str,
         netem_handle: str,
     ):
-        self.process_svc.call(
+        self.process_svc.run(
             TrafficControlAdapter.update_netem(
                 interface=self.interface,
                 class_id=qdisc_class,
@@ -178,7 +179,7 @@ class SystemStateService(ISystemStateService):
                     bearer_link_netem.loss_interval, env_netem.loss_interval
                 ),
                 loss_correlation=TrafficControlAdapter.add_percentage(
-                    bearer_link_netem.loss_correlation + env_netem.loss_correlation
+                    bearer_link_netem.loss_correlation, env_netem.loss_correlation
                 ),
                 corrupt_percentage=env_netem.corrupt_percentage,
                 corrupt_correlation=env_netem.corrupt_correlation,
@@ -196,7 +197,7 @@ class SystemStateService(ISystemStateService):
         netem_handle: str,
     ) -> bool:
 
-        self.process_svc.call(
+        self.process_svc.run(
             TrafficControlAdapter.create_htb_class(
                 interface=self.interface,
                 rate=bearer_link_hbt.rate,
@@ -205,7 +206,7 @@ class SystemStateService(ISystemStateService):
             )
         )
 
-        self.process_svc.call(
+        self.process_svc.run(
             TrafficControlAdapter.create_netem_qdisc(
                 interface=self.interface,
                 delay_time=TrafficControlAdapter.add(
@@ -233,7 +234,7 @@ class SystemStateService(ISystemStateService):
             )
         )
 
-        self.process_svc.call(
+        self.process_svc.run(
             TrafficControlAdapter.create_filter(
                 interface=self.interface,
                 flow_id=qdisc_class,
