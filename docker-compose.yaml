@@ -1,21 +1,21 @@
 version: "3"
 services:
-  container_a:
-    container_name: container_a
+  container_cloud:
+    container_name: container_cloud
     image: busybox
     privileged: true # permission required to change the subnet gateway to the impairment gateway
-    command: ["sh", "-c", "ip route del default; ip route add default via 172.18.0.3; while true; do echo 'container_a running'; sleep 5; done"]
+    command: ["sh", "-c", "ip route del default; ip route add default via 172.18.0.3; while true; do echo 'container_cloud running'; sleep 5; done"]
     networks:
-      network_a:
+      network_cloud:
         ipv4_address: 172.18.0.2
     
-  container_b:
-    container_name: container_b
+  container_edge:
+    container_name: container_edge
     image: busybox
     privileged: true # permission required to change the subnet gateway to the impairment gateway
-    command: ["sh", "-c", "ip route del default; ip route add default via 172.19.0.3; while true; do echo 'container_b running'; sleep 5; done"]
+    command: ["sh", "-c", "ip route del default; ip route add default via 172.19.0.3; while true; do echo 'container_edge running'; sleep 5; done"]
     networks:
-      network_b:
+      network_edge:
         ipv4_address: 172.19.0.2
     
 
@@ -30,9 +30,9 @@ services:
     ports:
       - "8000:8000"
     networks:
-      network_a:
+      network_cloud:
         ipv4_address: 172.18.0.3
-      network_b:
+      network_edge:
         ipv4_address: 172.19.0.3
     environment:
       UPLINK_INTERFACE: "eth0"
@@ -40,17 +40,17 @@ services:
       MOCK_PROCESS_CALLS: "FALSE"
       DATABASE_SEEDED: "FALSE"
     depends_on:
-      - container_a
-      - container_b
+      - container_cloud
+      - container_edge
 
 networks:
-  network_a:
+  network_cloud:
     driver: bridge
     ipam:
       config:
         - subnet: 172.18.0.0/16
 
-  network_b:
+  network_edge:
     driver: bridge
     ipam:
       config:

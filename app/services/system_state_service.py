@@ -64,7 +64,10 @@ class SystemStateService(ISystemStateService):
             )
 
         self.repo.set(bearer_id=payload.bearer_id, env_id=payload.environment_id)
-        return ResponseDTO(msg="Impairment updated", isError=False)
+        return ResponseDTO(
+            msg=f"Impairment updated to {bearer.title} with {env.title} environment.",
+            isError=False,
+        )
 
     def create_bearer_link(
         self,
@@ -119,8 +122,16 @@ class SystemStateService(ISystemStateService):
         )
 
     def delete_htb_netem_qdiscs(self) -> ResponseDTO:
-        TrafficControlAdapter.clear_qdisc(interface=self.uplink_interface)
-        TrafficControlAdapter.clear_filter(interface=self.uplink_interface)
-        TrafficControlAdapter.clear_qdisc(interface=self.downlink_interface)
-        TrafficControlAdapter.clear_filter(interface=self.downlink_interface)
+        self.process_svc.run(
+            TrafficControlAdapter.clear_qdisc(interface=self.uplink_interface)
+        )
+        self.process_svc.run(
+            TrafficControlAdapter.clear_filter(interface=self.uplink_interface)
+        )
+        self.process_svc.run(
+            TrafficControlAdapter.clear_qdisc(interface=self.downlink_interface)
+        )
+        self.process_svc.run(
+            TrafficControlAdapter.clear_filter(interface=self.downlink_interface)
+        )
         return ResponseDTO(msg="htb and netem qdisc added", isError=False)

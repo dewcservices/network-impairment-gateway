@@ -1,0 +1,55 @@
+{
+    "title": "test bearer",
+    "description": "test bearer",
+    "img": "https://example.com/image.jpg",
+    "links": {
+      "UPLINK": {
+        "hbt": {
+          "rate": {
+            "value": 0,
+            "unit": "kbit"
+          },
+          "ceil": {
+            "value": 0,
+            "unit": "kbit"
+          }
+        },
+        "netem": {
+          "delay": {
+            "time": 0,
+            "jitter": 0,
+            "correlation": 100
+          },
+          "loss": {
+            "percentage": 100,
+            "interval": 0,
+            "correlation": 100
+          }
+        }
+      },
+      "DOWNLINK": {
+        "hbt": {
+          "rate": {
+            "value": 0,
+            "unit": "kbit"
+          },
+          "ceil": {
+            "value": 0,
+            "unit": "kbit"
+          }
+        },
+        "netem": {
+          "delay": {
+            "time": 0,
+            "jitter": 0,
+            "correlation": 100
+          },
+          "loss": {
+            "percentage": 100,
+            "interval": 0,
+            "correlation": 100
+          }
+        }
+      }
+    }
+  }
