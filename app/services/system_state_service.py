@@ -43,9 +43,8 @@ class SystemStateService(ISystemStateService):
 
     def set_impairment(self, payload: SystemStateDTO) -> ResponseDTO:
         bearer = self.bearer_repo.get_by_id_eager(payload.bearer_id)
-        env = self.env_repo.get_by_id_eager(payload.environment_id)
-        # TODO - fix environment_netem db
-        env_netem: EnvironmentNetem = env.environment_netem[0]
+        uplink_env = self.env_repo.get_by_id_eager(payload.uplink_environment_id)
+        downlink_env = self.env_repo.get_by_id_eager(payload.uplink_environment_id)
 
         self.delete_htb_netem_qdiscs()
 
@@ -56,9 +55,12 @@ class SystemStateService(ISystemStateService):
             bearer_link_hbt = cast(BearerLinkHBT, link.bearer_link_hbt)
             interface = self.uplink_interface
             class_id = self.uplink_class
+            # TODO - fix environment_netem db
+            env_netem: EnvironmentNetem = uplink_env.environment_netem[0]
             if link.link_type_id == LinkTypes.DOWNLINK.value:
                 interface = self.downlink_interface
                 class_id = self.downlink_class
+                env_netem: EnvironmentNetem = downlink_env.environment_netem[0]
 
             self.create_bearer_link(
                 interface=interface,
@@ -70,7 +72,7 @@ class SystemStateService(ISystemStateService):
 
         self.repo.set(bearer_id=payload.bearer_id, env_id=payload.environment_id)
         return ResponseDTO(
-            msg=f"Impairment updated to {bearer.title} with {env.title} environment.",
+            msg=f"Impairment updated to {bearer.title} with uplink environment {uplink_env.title} and downlink environment {downlink_env.title}.",
             isError=False,
         )
 
