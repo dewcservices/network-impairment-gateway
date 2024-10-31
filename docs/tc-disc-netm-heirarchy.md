@@ -48,6 +48,7 @@ tc class change dev eth0 parent 1: classid 1:1 htb rate 512kbit ceil 512kbit
 
 update the qdisc netem for htb class 1:1
 
+
 ```sh
 tc qdisc change dev eth0 parent 1:1 handle 10: netem delay 300ms loss 20%
 ```
@@ -59,26 +60,11 @@ tc qdisc change dev eth0 parent 1:1 handle 10: netem delay 300ms
 would loss remain at 40% or be set back to 0%
 
 
-https://github.com/shynuu/trunks
+
 
 ## Uplink/Downlink Bandwidth example
 
-```sh
-# Add root qdisc to eth0
-tc qdisc add dev eth0 root handle 1: htb default 12
-# Create uplink class (2 Mbps)
-tc class add dev eth0 parent 1: classid 1:1 htb rate 2mbit ceil 2mbit
-# Create downlink class (5 Mbps)
-tc class add dev eth1 parent 1: classid 1:2 htb rate 5mbit ceil 5mbit
-# Filter for uplink traffic
-tc filter add dev eth0 protocol ip parent 1: prio 1 u32 match ip src 192.168.1.100/32 flowid 1:1
-# Filter for downlink traffic
-tc filter add dev eth0 protocol ip parent 1: prio 1 u32 match ip dst 192.168.1.100/32 flowid 1:2
-# Apply netem for uplink traffic (100ms delay, 10% loss)
-tc qdisc add dev eth1 parent 1:1 handle 10: netem delay 100ms loss 10%
-# Apply netem for downlink traffic (50ms delay, 5% loss)
-tc qdisc add dev eth0 parent 1:2 handle 20: netem delay 50ms loss 5%
-```
+[ref](https://github.com/shynuu/trunks)
 
 ```sh
 ST_IFACE=enp0s8
@@ -115,4 +101,16 @@ sudo tc filter add dev $ST_IFACE protocol ip parent 1:0 prio 1 handle 20 fw flow
 sudo tc -s qdisc ls dev $ST_IFACE
 sudo tc -s class ls dev $ST_IFACE
 sudo tc -s filter ls dev $ST_IFACE
+```
+```sh
+# Apply HTB to the uplink interface with a base rate and max ceiling
+sudo tc qdisc add dev $UPLINK_INTERFACE root handle 1: htb default 10
+sudo tc class add dev $UPLINK_INTERFACE parent 1: classid 1:10 htb rate 512kbit ceil 1mbit
+# Attach netem impairments to the HTB class on the uplink interface
+sudo tc qdisc add dev $UPLINK_INTERFACE parent 1:10 handle 10: netem delay 100ms 20ms loss 5% corrupt 1%
+# Apply HTB to the downlink interface
+sudo tc qdisc add dev $DOWNLINK_INTERFACE root handle 1: htb default 20
+sudo tc class add dev $DOWNLINK_INTERFACE parent 1: classid 1:20 htb rate 1mbit ceil 2mbit
+# Attach netem impairments to the HTB class on the downlink interface
+sudo tc qdisc add dev $DOWNLINK_INTERFACE parent 1:20 handle 20: netem delay 50ms 10ms loss 3% corrupt 0.5%
 ```

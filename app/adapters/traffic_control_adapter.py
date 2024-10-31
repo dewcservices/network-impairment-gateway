@@ -1,15 +1,16 @@
 class TrafficControlAdapter:
     @staticmethod
-    def create_root_qdisc(interface: str):
-        return f"tc qdisc add dev {interface} root handle 1:0 htb default 30"
+    def create_root_qdisc(interface: str, class_id: str):
+        return f"tc qdisc add dev {interface} root handle 1: htb default {class_id}"
 
     @staticmethod
-    def create_htb_class(interface: str, rate: str, ceil: str):
-        return f"tc class add dev {interface} parent 1:0 classid 1:1 htb rate {rate} ceil {ceil}"
+    def create_htb_class(interface: str, rate: str, ceil: str, class_id: str):
+        return f"tc class add dev {interface} parent 1: classid 1:{class_id} htb rate {rate} ceil {ceil}"
 
     @staticmethod
     def create_netem_qdisc(
         interface: str,
+        class_id: str,
         delay_time: int,
         delay_jitter: int = 0,
         delay_correlation: int = 0,
@@ -19,14 +20,7 @@ class TrafficControlAdapter:
         corrupt_percentage: int = 0,
         corrupt_correlation: int = 0,
     ):
-        return f"tc qdisc add dev {interface} parent 1:1 handle 2:0 netem delay {delay_time}ms {delay_jitter}ms {delay_correlation}% loss {loss_percentage}% {loss_correlation}% corrupt {corrupt_percentage}% {corrupt_correlation}%"
-
-    @staticmethod
-    def create_filter(
-        interface: str,
-    ):
-
-        return f"tc filter add dev {interface} protocol ip parent 1:0 prio 1 handle 10 fw flowid 1:1"
+        return f"tc qdisc add dev {interface} parent 1:{class_id} handle {class_id}: netem delay {delay_time}ms {delay_jitter}ms {delay_correlation}% loss {loss_percentage}% {loss_correlation}% corrupt {corrupt_percentage}% {corrupt_correlation}%"
 
     @staticmethod
     def add_percentage(bearer_percentage: int, environment_percentage: int) -> int:

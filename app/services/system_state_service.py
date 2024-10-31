@@ -35,6 +35,8 @@ class SystemStateService(ISystemStateService):
         self.process_svc = process_svc
         self.uplink_interface = uplink_interface
         self.downlink_interface = downlink_interface
+        self.uplink_class = "10"
+        self.downlink_class = "20"
 
     def get(self) -> SystemStateDTO:
         return SystemStateAdapter.SystemStateToDTO(self.repo.get())
@@ -53,14 +55,17 @@ class SystemStateService(ISystemStateService):
             bearer_link_netem = cast(BearerLinkNetem, link.bearer_link_netem)
             bearer_link_hbt = cast(BearerLinkHBT, link.bearer_link_hbt)
             interface = self.uplink_interface
+            class_id = self.uplink_class
             if link.link_type_id == LinkTypes.DOWNLINK.value:
                 interface = self.downlink_interface
+                class_id = self.downlink_class
 
             self.create_bearer_link(
                 interface=interface,
                 bearer_link_hbt=bearer_link_hbt,
                 bearer_link_netem=bearer_link_netem,
                 env_netem=env_netem,
+                class_id=class_id,
             )
 
         self.repo.set(bearer_id=payload.bearer_id, env_id=payload.environment_id)
@@ -75,15 +80,19 @@ class SystemStateService(ISystemStateService):
         bearer_link_netem: BearerLinkNetem,
         env_netem: EnvironmentNetem,
         interface: str,
+        class_id: str,
     ) -> bool:
         # create root qdisc
         self.process_svc.run(
-            TrafficControlAdapter.create_root_qdisc(interface=interface)
+            TrafficControlAdapter.create_root_qdisc(
+                interface=interface, class_id=class_id
+            )
         )
 
         self.process_svc.run(
             TrafficControlAdapter.create_htb_class(
                 interface=interface,
+                class_id=class_id,
                 rate=bearer_link_hbt.rate,
                 ceil=bearer_link_hbt.ceil,
             )
@@ -92,6 +101,7 @@ class SystemStateService(ISystemStateService):
         self.process_svc.run(
             TrafficControlAdapter.create_netem_qdisc(
                 interface=interface,
+                class_id=class_id,
                 delay_time=TrafficControlAdapter.add(
                     bearer_link_netem.delay_time, env_netem.delay_time
                 ),
@@ -115,23 +125,21 @@ class SystemStateService(ISystemStateService):
             )
         )
 
-        self.process_svc.run(
-            TrafficControlAdapter.create_filter(
-                interface=interface,
-            )
-        )
-
     def delete_htb_netem_qdiscs(self) -> ResponseDTO:
         self.process_svc.run(
-            TrafficControlAdapter.clear_qdisc(interface=self.uplink_interface)
+            cmd=TrafficControlAdapter.clear_qdisc(interface=self.uplink_interface),
+            error_check=False,
         )
         self.process_svc.run(
-            TrafficControlAdapter.clear_filter(interface=self.uplink_interface)
+            cmd=TrafficControlAdapter.clear_filter(interface=self.uplink_interface),
+            error_check=False,
         )
         self.process_svc.run(
-            TrafficControlAdapter.clear_qdisc(interface=self.downlink_interface)
+            cmd=TrafficControlAdapter.clear_qdisc(interface=self.downlink_interface),
+            error_check=False,
         )
         self.process_svc.run(
-            TrafficControlAdapter.clear_filter(interface=self.downlink_interface)
+            cmd=TrafficControlAdapter.clear_filter(interface=self.downlink_interface),
+            error_check=False,
         )
         return ResponseDTO(msg="htb and netem qdisc added", isError=False)
