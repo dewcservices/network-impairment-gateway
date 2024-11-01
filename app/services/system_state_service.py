@@ -70,7 +70,11 @@ class SystemStateService(ISystemStateService):
                 class_id=class_id,
             )
 
-        self.repo.set(bearer_id=payload.bearer_id, env_id=payload.environment_id)
+        self.repo.set(
+            bearer_id=payload.bearer_id,
+            uplink_env_id=payload.uplink_environment_id,
+            downlink_env_id=payload.downlink_environment_id,
+        )
         return ResponseDTO(
             msg=f"Impairment updated to {bearer.title} with uplink environment {uplink_env.title} and downlink environment {downlink_env.title}.",
             isError=False,
