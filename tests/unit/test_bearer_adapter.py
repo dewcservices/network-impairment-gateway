@@ -1,8 +1,6 @@
 import unittest
 from typing import List
 
-from pydantic import HttpUrl
-
 from app.adapters.bearer_adapter import BearerAdapter, NetemAdapter
 from app.constants import LinkTypes
 from app.dtos.bearer_dtos import BearerDTO, BearerLinkDTO
@@ -42,7 +40,7 @@ class TestBearerAdapter(unittest.TestCase):
         # assert
         assert result.id == self.id
         assert result.title == self.title
-        assert result.img == HttpUrl(self.img)
+        assert result.img == self.img
         assert result.description == self.description
 
     def test_BearersToBearerDetailsDTOs(self):
@@ -66,7 +64,7 @@ class TestBearerAdapter(unittest.TestCase):
             assert result[id].id == bearers[id].id
             assert result[id].title == bearers[id].title
             assert result[id].description == bearers[id].description
-            assert result[id].img == HttpUrl(bearers[id].img)
+            assert result[id].img == bearers[id].img
 
     def test_BearerDTOToBearer(self):
         # arrange
@@ -74,7 +72,7 @@ class TestBearerAdapter(unittest.TestCase):
         dto = BearerDTO(
             title=self.title,
             description=self.description,
-            img=HttpUrl(self.img),
+            img=self.img,
             links={
                 "uplink": {
                     "hbt": {
@@ -145,7 +143,7 @@ class TestBearerAdapter(unittest.TestCase):
         result = BearerAdapter.BearerToBearerDTO(bearer=bearer)
         # assert
         assert result.title == self.title
-        assert result.img == HttpUrl(self.img)
+        assert result.img == self.img
         assert result.description == self.description
         assert len(result.links) == 2
         self.assert_bearer_link(result.links.get(LinkTypes.UPLINK.name), uplink)
