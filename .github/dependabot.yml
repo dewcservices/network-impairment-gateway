@@ -1,3 +1,5 @@
+version: 2
+updates: 
   - package-ecosystem: "pip"
     directory: "/" # Location of your requirements file, typically at the root
     schedule:
