@@ -19,6 +19,7 @@ class TestEnvironmentAdapter(unittest.TestCase):
             title=self.title,
             description=self.description,
             active=True,
+            environment_netem=[],
         )
         # act
         result = EnvironmentAdapter.EnvironmentToEnvironmentDTO(env)

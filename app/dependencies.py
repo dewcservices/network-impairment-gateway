@@ -22,16 +22,10 @@ from app.services.subprocess_service import SubprocessService
 from app.services.system_state_service import SystemStateService
 
 # Load values from environment variables with defaults
-ip_address = os.getenv("IP_ADDRESS", "172.18.0.1")
-interface = os.getenv("INTERFACE", "eth0")
-uplink_qdisc_class = os.getenv("UPLINK_QDISC_CLASS", "1:1")
-downlink_qdisc_class = os.getenv("DOWNLINK_QDISC_CLASS", "1:2")
-uplink_direction = os.getenv("UPLINK_DIRECTION", "dst")
-downlink_direction = os.getenv("DOWNLINK_DIRECTION", "src")
-uplink_netem_handle = os.getenv("UPLINK_NETEM_HANDLE", "10:")
-downlink_netem_handle = os.getenv("DOWNLINK_NETEM_HANDLE", "20:")
+uplink_interface = os.getenv("UPLINK_INTERFACE", "eth0")
+downlink_interface = os.getenv("DOWNLINK_INTERFACE", "eth1")
 mock_process_calls = os.getenv("MOCK_PROCESS_CALLS", "True").lower() == "true"
-seeded = os.getenv("SEED_DATABASE", "FALSE").lower() == "true"
+seeded = os.getenv("DATABASE_SEEDED", "FALSE").lower() == "true"
 
 
 def get_db():
@@ -86,25 +80,15 @@ def get_setting_service(
     env_repo: IEnvironmentRepository = Depends(get_env_repository),
     process_svc: IEnvironmentRepository = Depends(get_process_service),
 ) -> ISystemStateService:
-    global ip_address
-    global interface
-    global uplink_qdisc_class
-    global downlink_qdisc_class
-    global uplink_direction
-    global downlink_direction
-    global uplink_netem_handle
-    global downlink_netem_handle
+
+    global downlink_interface
+    global uplink_interface
+
     return SystemStateService(
         repo=repo,
         bearer_repo=bearer_repo,
         env_repo=env_repo,
         process_svc=process_svc,
-        interface=interface,
-        ip_address=ip_address,
-        uplink_qdisc_class=uplink_qdisc_class,
-        downlink_qdisc_class=downlink_qdisc_class,
-        uplink_direction=uplink_direction,
-        downlink_direction=downlink_direction,
-        uplink_netem_handle=uplink_netem_handle,
-        downlink_netem_handle=downlink_netem_handle,
+        uplink_interface=uplink_interface,
+        downlink_interface=downlink_interface,
     )

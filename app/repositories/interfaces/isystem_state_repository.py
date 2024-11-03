@@ -9,5 +9,5 @@ class ISystemStateRepository(ABC):
         pass
 
     @abstractmethod
-    def set(bearer_id: int, env_id: int) -> bool:
+    def set(bearer_id: int, uplink_env_id: int, downlink_env_id: int) -> bool:
         pass

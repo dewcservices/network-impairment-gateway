@@ -1,0 +1,7 @@
+version: 2
+updates: 
+  - package-ecosystem: "pip"
+    directory: "/" # Location of your requirements file, typically at the root
+    schedule:
+      interval: "weekly" # Options: daily, weekly, monthly
+    open-pull-requests-limit: 5 # Optional: limits the number of open Dependabot PRs

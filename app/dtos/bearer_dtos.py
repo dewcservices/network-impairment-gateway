@@ -1,6 +1,6 @@
 from typing import Dict, Optional
 
-from pydantic import BaseModel, Field, HttpUrl
+from pydantic import BaseModel, Field
 
 from app.dtos.hbt_dtos import HBTDTO
 from app.dtos.netem_dtos import NetemDelayDTO, NetemLossDTO
@@ -36,7 +36,7 @@ class BearerDTO(BaseModel):
         max_length=500,
         description="A description of the satellite or bearer connection",
     )
-    img: Optional[HttpUrl] = Field(
+    img: Optional[str] = Field(
         None, description="A URL for an image representing the bearer"
     )
     links: Dict[str, BearerLinkDTO] = Field(..., description="Bearer Links")
@@ -59,7 +59,7 @@ class BearerDetailsDTO(BaseModel):
         max_length=500,
         description="A description of the satellite or bearer connection",
     )
-    img: Optional[HttpUrl] = Field(
+    img: Optional[str] = Field(
         None, description="A URL for an image representing the bearer"
     )
 

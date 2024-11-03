@@ -8,9 +8,9 @@ from app.repositories.interfaces.ibearer_repository import IBearerRepository
 # Delay: 600 ms, Jitter: 50 ms, Loss: 0.1%, Correlation: 10%
 def seed_optus_c1_bearer(bearer_repo: IBearerRepository):
     bearer_optus_c1 = bearer_repo.create(
-        title="Optus C1",
-        description="Satellite connection for Optus C1",
-        img="https://upload.wikimedia.org/wikipedia/en/thumb/e/eb/OptusD1_SatelliteOnly.jpg/200px-OptusD1_SatelliteOnly.jpg",
+        title="Military Satellite",
+        description="Military Satellite connection such as Optus C1",
+        img="assets/pexels-igor-mashkov-14869791-6325001.jpg",
     )
     # Uplink (Optus C1)
     bearer_repo.create_bearer_link(
@@ -49,7 +49,7 @@ def seed_commercial_maritime_bearer(bearer_repo: IBearerRepository):
     bearer_com_maritime = bearer_repo.create(
         title="Commercial Maritime Satellite",
         description="Satellite connection for maritime operations",
-        img="https://www.eoportal.org/api/cms/documents/163813/5807516/Alphasat_Auto36.jpeg",
+        img="https://starlinkinstallationpros.com/wp-content/uploads/2024/05/Starlink-Maritime-VSAT-Plus-1024x699.webp",
     )
     # Uplink (Commercial Maritime Satellite)
     bearer_repo.create_bearer_link(
@@ -86,7 +86,7 @@ def seed_4g_bearer(bearer_repo: IBearerRepository):
     bearer_4g = bearer_repo.create(
         title="4G",
         description="4G connection",
-        img="https://www.eoportal.org/api/cms/documents/163813/5807516/Alphasat_Auto36.jpeg",
+        img="assets/pexels-ulrick-t-15523291.jpg",
     )
     # Uplink (4G)
     bearer_repo.create_bearer_link(
@@ -122,7 +122,7 @@ def seed_5g_bearer(bearer_repo: IBearerRepository):
     bearer_5g = bearer_repo.create(
         title="5G",
         description="5G connection",
-        img="https://www.eoportal.org/api/cms/documents/163813/5807516/Alphasat_Auto36.jpeg",
+        img="assets/pexels-ulrick-t-15523291.jpg",
     )
     # Uplink (5G)
     bearer_repo.create_bearer_link(
@@ -158,7 +158,7 @@ def seed_fixed_internet_bearer(bearer_repo: IBearerRepository):
     bearer_fixed = bearer_repo.create(
         title="Fixed Internet",
         description="Fixed high-speed internet connection",
-        img="https://www.eoportal.org/api/cms/documents/163813/5807516/Alphasat_Auto36.jpeg",
+        img="assets/pexels-field-engineer-147254-442150.jpg",
     )
     # Uplink (Fixed Internet)
     bearer_repo.create_bearer_link(
