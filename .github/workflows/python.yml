@@ -6,7 +6,7 @@ on: [push, pull_request]
 env:
   DOCKER_IMAGE_NAME: "network-impairment-gateway"
   SONAR_ORGANIZATION: "secrets.SONAR_ORGANISATION"
-  SONAR_PROJECT_KEY: "secrets.SONAR_TOKEN"
+  SONAR_PROJECT_KEY: "network-impairment-gateway"
   PYTHON_APP_SOURCE_DIR: "app"
   PYTEST_COVERAGE_XML_FILE_NAME: "coverage-reports/coverage-pytest.xml"
   PYTEST_COVERAGE_THRESHOLD_PERCENT: 0
