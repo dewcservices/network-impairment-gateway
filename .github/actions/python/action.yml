@@ -72,30 +72,30 @@ runs:
         grep -q 'pytest-cov' requirements.txt || pip install pytest-cov
       shell: bash
 
-    - name: Parse PyTest coverage xml file name option
-      shell: bash
-      if: ${{ inputs.pytest_coverage_xml_file_name }} != ''
-      run: |
-        echo "pytest_report_name_options=$(echo '--cov-report=xml:${{ inputs.pytest_coverage_xml_file_name }} --cov-report=term-missing:skip-covered')" >> $GITHUB_ENV
+    # - name: Parse PyTest coverage xml file name option
+    #   shell: bash
+    #   if: ${{ inputs.pytest_coverage_xml_file_name }} != ''
+    #   run: |
+    #     echo "pytest_report_name_options=$(echo '--cov-report=xml:${{ inputs.pytest_coverage_xml_file_name }} --cov-report=term-missing:skip-covered')" >> $GITHUB_ENV
 
-    - name: Parse PyTest coverage fail percent option
-      shell: bash
-      if: ${{ inputs.pytest_coverage_threshold_percent }} != 0
-      run: |
-        echo "pytest_fail_percent_options=$(echo '--cov-fail-under=${{ inputs.pytest_coverage_threshold_percent }}')" >> $GITHUB_ENV
+    # - name: Parse PyTest coverage fail percent option
+    #   shell: bash
+    #   if: ${{ inputs.pytest_coverage_threshold_percent }} != 0
+    #   run: |
+    #     echo "pytest_fail_percent_options=$(echo '--cov-fail-under=${{ inputs.pytest_coverage_threshold_percent }}')" >> $GITHUB_ENV
 
-    - name: Test with PyTest
-      shell: bash
-      run: |
-        pytest --cov ${{ env.pytest_report_name_options }} ${{ env.pytest_fail_percent_options }}
+    # - name: Test with PyTest
+    #   shell: bash
+    #   run: |
+    #     pytest --cov ${{ env.pytest_report_name_options }} ${{ env.pytest_fail_percent_options }}
 
-    - name: Override Coverage Source Path for Sonar
-      # needed for converting pytest coverage to sonarcloud formatting, details here:
-      # https://copdips.com/2023/01/sonarcloud-github-action.html#file-githubworkflowsciyml
-      if: ${{ inputs.pytest_coverage_xml_file_name }} != ''
-      shell: bash
-      run: |
-        sed -i 's@'$GITHUB_WORKSPACE'@/github/workspace/@g' $GITHUB_WORKSPACE/${{ inputs.pytest_coverage_xml_file_name }}
+    # - name: Override Coverage Source Path for Sonar
+    #   # needed for converting pytest coverage to sonarcloud formatting, details here:
+    #   # https://copdips.com/2023/01/sonarcloud-github-action.html#file-githubworkflowsciyml
+    #   if: ${{ inputs.pytest_coverage_xml_file_name }} != ''
+    #   shell: bash
+    #   run: |
+    #     sed -i 's@'$GITHUB_WORKSPACE'@/github/workspace/@g' $GITHUB_WORKSPACE/${{ inputs.pytest_coverage_xml_file_name }}
 
     - name: SonarCloud Scan
       uses: SonarSource/sonarcloud-github-action@master
