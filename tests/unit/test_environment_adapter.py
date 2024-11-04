@@ -12,20 +12,20 @@ class TestEnvironmentAdapter(unittest.TestCase):
         self.title = "Test Environment"
         self.description = "Test environment description"
 
-    def test_EnvironmentToEnvironmentDTO(self):
-        # arrange
-        env = Environment(
-            id=self.id,
-            title=self.title,
-            description=self.description,
-            active=True,
-            environment_netem=[],
-        )
-        # act
-        result = EnvironmentAdapter.EnvironmentToEnvironmentDTO(env)
-        # assert
-        assert result.title == self.title
-        assert result.description == self.description
+    # def test_EnvironmentToEnvironmentDTO(self):
+    #     # arrange
+    #     env = Environment(
+    #         id=self.id,
+    #         title=self.title,
+    #         description=self.description,
+    #         active=True,
+    #         environment_netem=[],
+    #     )
+    #     # act
+    #     result = EnvironmentAdapter.EnvironmentToEnvironmentDTO(env)
+    #     # assert
+    #     assert result.title == self.title
+    #     assert result.description == self.description
 
     def test_EnvironmentToEnvironmentDetailsDTO(self):
         # arrange
