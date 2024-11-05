@@ -1,3 +1,5 @@
+import os
+
 import uvicorn
 from fastapi import FastAPI, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
@@ -31,7 +33,8 @@ async def websocket_network(websocket: WebSocket):
     await websocket_endpoint(websocket)
 
 
-origins = ["http://localhost:4200"]
+# Load origins from environment variable
+origins = os.getenv("CORS_ORIGINS", "http://localhost:4200").split(",")
 
 app.add_middleware(
     CORSMiddleware,
