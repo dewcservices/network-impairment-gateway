@@ -79,12 +79,12 @@ def seed_disrupted_env(repo: IEnvironmentRepository):
     repo.create(
         title="Disrupted",
         description="Unstable network with high latency, packet loss, and occasional corruption.",
-        netem_delay_time=1500,  # 1500 ms delay
-        netem_delay_jitter=400,  # 400 ms jitter
+        netem_delay_time=400,  # 1500 ms delay
+        netem_delay_jitter=200,  # 400 ms jitter
         netem_delay_correlation=70,  # 70% correlation
-        netem_loss_percentage=40.0,  # 40% packet loss
+        netem_loss_percentage=20.0,  # 40% packet loss
         netem_loss_interval=100,  # 100 ms loss interval
-        netem_loss_correlation=60,  # 60% loss correlation
+        netem_loss_correlation=40,  # 60% loss correlation
         netem_corrupt_percentage=5.0,  # 5% corruption
         netem_corrupt_correlation=15,  # 15% corruption correlation
     )
@@ -106,10 +106,10 @@ def seed_intermittent_env(repo: IEnvironmentRepository):
     repo.create(
         title="Intermittent",
         description="Network with moderate latency and frequent drops, but not fully disconnected.",
-        netem_delay_time=800,  # 800 ms delay
-        netem_delay_jitter=200,  # 200 ms jitter
+        netem_delay_time=250,  # 800 ms delay
+        netem_delay_jitter=150,  # 200 ms jitter
         netem_delay_correlation=50,  # 50% correlation
-        netem_loss_percentage=20.0,  # 20% packet loss
+        netem_loss_percentage=15.0,  # 20% packet loss
         netem_loss_interval=200,  # 200 ms loss interval
         netem_loss_correlation=40,  # 40% loss correlation
         netem_corrupt_percentage=2.0,  # 2% corruption
@@ -133,37 +133,12 @@ def seed_limited_env(repo: IEnvironmentRepository):
     repo.create(
         title="Limited",
         description="Low-bandwidth but stable network with minor delays and occasional packet loss.",
-        netem_delay_time=300,  # 300 ms delay
-        netem_delay_jitter=50,  # 50 ms jitter
+        netem_delay_time=150,  # 300 ms delay
+        netem_delay_jitter=100,  # 50 ms jitter
         netem_delay_correlation=30,  # 30% correlation
-        netem_loss_percentage=5.0,  # 5% packet loss
+        netem_loss_percentage=0.0,  # 5% packet loss
         netem_loss_interval=500,  # 500 ms loss interval
         netem_loss_correlation=10,  # 10% loss correlation
         netem_corrupt_percentage=0.5,  # 0.5% corruption
         netem_corrupt_correlation=2,  # 2% corruption correlation
-    )
-
-    ## 4G in Congested Area (Moderate Latency, Moderate Loss)
-    # Delay: 300 ms
-    # Jitter: 100 ms
-    # Delay Correlation: 15%
-    # Loss: 7%
-    # Loss Interval: 300 ms
-    # Loss Correlation: 25%
-    # Corruption: 0.3%
-    # Corruption Correlation: 5%
-
-
-def seed_congested_4g_env(repo: IEnvironmentRepository):
-    repo.create(
-        title="4G in Congested Area",
-        description="Moderate latency and loss simulating 4G in a congested area",
-        netem_delay_time=300,
-        netem_delay_jitter=100,
-        netem_delay_correlation=15,
-        netem_loss_percentage=7.0,
-        netem_loss_interval=300,
-        netem_loss_correlation=25,
-        netem_corrupt_percentage=0.3,
-        netem_corrupt_correlation=5,
     )

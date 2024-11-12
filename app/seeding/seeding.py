@@ -14,7 +14,6 @@ from app.seeding.bearers import (
 )
 from app.seeding.environments import (
     seed_clean_env,
-    seed_congested_4g_env,
     seed_disconnected_env,
     seed_disrupted_env,
     seed_intermittent_env,
@@ -36,7 +35,6 @@ def seed_environments(env_repo: IEnvironmentRepository):
     seed_disrupted_env(env_repo)
     seed_intermittent_env(env_repo)
     seed_limited_env(env_repo)
-    seed_congested_4g_env(env_repo)
 
 
 def seed_bearer_link_types(db: Session):
