@@ -34,13 +34,7 @@ class TrafficControlAdapter:
 
     @staticmethod
     def add(bearer_value: int, environment_value: int) -> int:
-        temp = bearer_value + environment_value
-        if temp > 100:
-            return 100
-        elif temp < 0:
-            return 0
-
-        return temp
+        return bearer_value + environment_value
 
     @staticmethod
     def update_hbt(interface: str, class_id: str, rate: str, ceil: str) -> str:
